@@ -1,11 +1,11 @@
 <template>
   <div>
     <div>
-      <div class="relative mt-2">
+      <div class="relative mt-2 -mx-2 space-y-2">
         <button
           type="button"
           @click="toggleDropdown"
-          class="relative w-full cursor-default rounded-md bg-white py-1 pl-3 pr-10 text-left text-gray-900 shadow-md hover:shadow-lg ring-1 ring-inset ring-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+          class="relative w-full cursor-default rounded-md bg-white py-1 pl-3 pr-10 text-left text-gray-900 shadow-md hover:shadow-lg ring-1 ring-inset ring-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6 "
           aria-haspopup="listbox"
           aria-expanded="true"
           aria-labelledby="listbox-label"
@@ -53,7 +53,8 @@
     </div>
   </div>
 </template>
-
+<script>
+</script>
 <script setup>
 import { ref, onMounted } from "vue";
 import { useTab } from "@/store/counter";
@@ -63,10 +64,11 @@ const store = useTab();
 const current = ref(store.currentTab);
 const isDropdownOpen = ref(false);
 const tabs = [
-  { name: "Youtube", href: "#", logo: "/src/assets/youtube-icon.svg", current: false },
-  { name: "Instagram", href: "#", logo: "/src/assets/instagram.svg", current: false },
-  { name: "Tiktok", href: "#", logo: "/src/assets/tiktok-icon.svg", current: true },
+  { name: "Youtube", href: "#", logo: "https://w7.pngwing.com/pngs/208/269/png-transparent-youtube-play-button-computer-icons-youtube-youtube-logo-angle-rectangle-logo-thumbnail.png", current: false },
+  { name: "Instagram", href: "#", logo: "https://w7.pngwing.com/pngs/722/1011/png-transparent-logo-icon-instagram-logo-instagram-logo-purple-violet-text-thumbnail.png", current: false },
+  { name: "Tiktok", href: "#", logo: "https://w7.pngwing.com/pngs/959/454/png-transparent-tiktok-logo-thumbnail.png", current: true },
 ];
+
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
