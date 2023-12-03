@@ -222,7 +222,7 @@ onMounted(() => {
     store.setHeadline("Settings");
   } else if (currentRoute0 === "/Admintransaction") {
     store.setHeadline("Transactions");
-  } else if (currentRoute0 === "/adminusers") {
+  } else if (currentRoute0 === "/adminusers") { 
     store.setHeadline("Users");
   } else if (currentRoute0 === "/competition") {
     store.setHeadline("Competition");
@@ -244,33 +244,33 @@ onMounted(() => {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/dashboard",
+    href: "/Admindashboard",
     icon: DashSVG,
-    current: currentRoute.value === "/dashboard",
+    current: currentRoute.value === "/Admindashboard",
   },
   {
     name: "Users",
-    href: "/optimization",
+    href: "/Adminusers",
     icon: OptSVG,
-    current: currentRoute.value === "/optimization",
+    current: currentRoute.value === "/Adminusers",
   },
   {
     name: "Transactions",
-    href: "keyword-research",
+    href: "/Admintransaction",
     icon: DollarSVG,
-    current: currentRoute.value === "/keyword-research",
+    current: currentRoute.value === "/Admintransaction",
   },
   {
     name: "Email",
-    href: "/marketing",
+    href: "/Adminmail",
     icon: Marketing,
-    current: currentRoute.value === "/marketing",
+    current: currentRoute.value === "/Adminmail",
   },
   {
     name: "Settings",
-    href: "/competition",
+    href: "/Adminsettings",
     icon: DollarSVG,
-    current: currentRoute.value === "/competition",
+    current: currentRoute.value === "/Adminsettings",
   },
 ];
 const teams = [
