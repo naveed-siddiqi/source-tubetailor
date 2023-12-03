@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['vue3-carousel/dist/carousel.css'],
+      external: [],
     },
   },
 })
