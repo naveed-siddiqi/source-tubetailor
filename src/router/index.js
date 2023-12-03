@@ -11,6 +11,11 @@ import Competition from "@/pages/Competition.vue";
 import KeywordResearch from "@/pages/KeywordResearch.vue";
 import Optimzation from "@/pages/Optimization.vue";
 import Landing from "@/pages/landingPage.vue";
+import AdminDashboard from "@/pages/AdminPanel/AdminDashboard.vue";
+import AdminSettings from "@/pages/AdminPanel/AdminSettings.vue";
+import AdminTransaction from "@/pages/AdminPanel/AdminTransaction.vue";
+import AdminUsers from "@/pages/AdminPanel/AdminUsers.vue";
+import AdminMail from "@/pages/AdminPanel/AdminMail.vue";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -68,6 +73,31 @@ const router = createRouter({
       path: "/Progress",
       name: "pro",
       component: Progress,
+    },
+    {
+      path: "/Admindashboard",
+      name: "AdminDashboard",
+      component: AdminDashboard,
+    },
+    {
+      path: "/Adminsettings",
+      name: "AdminSettings",
+      component: AdminSettings,
+    },
+    {
+      path: "/Admintransaction",
+      name: "AdminTransaction",
+      component: AdminTransaction,
+    },
+    {
+      path: "/Adminusers",
+      name: "AdminUsers",
+      component: AdminUsers,
+    },
+    {
+      path: "/Adminmail",
+      name: "AdminMail",
+      component: AdminMail,
     },
   ],
 });
