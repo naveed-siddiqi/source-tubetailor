@@ -389,6 +389,8 @@ const teams = [
 const userNavigation = [
   { name: "Your profile", href: "/account-Settings" },
   { name: "Sign out", href: "#" },
+  { name: "Admin panel", href: "adminDashboard" },
+
 ];
 
 onMounted(() => {
