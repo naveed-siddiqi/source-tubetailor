@@ -38,7 +38,7 @@ const people = [
     </div>
     <tableLayout class="col-span-1 md:col-span-3 shadow-sm border !border-gray-200">
         <div class="absolute">
-            Showing 12,453 users
+            Showing {{ filteredUsers.length }} users
         </div>
         <div class="slide-names">
             <div v-for="(slide, index) in slides" :key="index" :class="{ 'active': index === currentIndex }">
