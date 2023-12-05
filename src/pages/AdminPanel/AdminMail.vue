@@ -75,12 +75,12 @@ text-xs sm:text-sm mt-4 text-end">
                     </div>
                     <div class="">
                         <div class="relative">
-                            <h2 class="text-[15px] sm:text-[20px] font-semibold">Total Users</h2>
+                            <h2 class="text-[15px] sm:text-[20px] font-semibold">Paid Users</h2>
                             <informationcircleicon class="absolute top-0 w-5 h-5 text-black left-[160px]">
                             </informationcircleicon>
                         </div>
                         <div class="mt-1">
-                            <h2 class="text-[15px]  sm:text-[20px] text-gray-400">12,224</h2>
+                            <h2 class="text-[15px]  sm:text-[20px] text-gray-400">12,224 (10%)</h2>
                         </div>
                     </div>
                 </div>
