@@ -12,15 +12,7 @@ const people = [
     <div class="md:col-span-3 grid grid-col-1 sm:grid-cols-3 gap-4">
         <div>
             <label class="text-sm sm:text-lg text-gray-800 font-medium" for="filter">Search</label>
-            <select
-                class="px-4 py-2.5 bg-white styleCard rounded-md col-span-1 md:col-span-3 shadow-sm border !border-gray-200"
-                v-model="filter" id="filter">
-                <option value="">List all users
-                </option>
-                <option value="Basic">Basic</option>
-                <option value="Pro">Pro</option>
-                <option value="Lite">Lite</option>
-            </select>
+            <input class="px-4 py-2.5 bg-white styleCard rounded-md col-span-1 md:col-span-3 shadow-sm border !border-gray-200" type="text" placeholder="Search user">
         </div>
         <div>
             <label class="text-sm sm:text-lg text-gray-800 font-medium" for="filter">Filter:</label>
@@ -36,12 +28,11 @@ const people = [
         <div>
             <label class="text-sm sm:text-lg text-gray-800 font-medium" for="filter">Sort By:</label>
             <select
-                class="px-4 py-2.5 bg-white styleCard rounded-md col-span-1 md:col-span-3 shadow-sm border !border-gray-200"
-                v-model="filter" id="filter">
-                <option value="">List all users</option>
-                <option value="Basic">Basic</option>
-                <option value="Pro">Pro</option>
-                <option value="Lite">Lite</option>
+                class="px-4 py-2.5 bg-white styleCard rounded-md col-span-1 md:col-span-3 shadow-sm border !border-gray-200">
+                <option value="">Most Recent</option>
+                <option value="Basic">old</option>
+                <option value="Pro">new</option>
+                <option value="Lite">Both</option>
             </select>
         </div>
     </div>
