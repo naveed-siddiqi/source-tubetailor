@@ -157,7 +157,7 @@
         </div>
       </div>
 
-      <main class="w-full min-h-screen py-10">
+      <main class="w-full min-h-screen py-3 sm:py-10">
         <div class="px-4 sm:px-6 lg:px-8">
           <slot />
         </div>

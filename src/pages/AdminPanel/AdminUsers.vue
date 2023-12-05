@@ -1,7 +1,7 @@
 <template>
     <AdminMainLayout>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <table-layout class="shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4">
+            <table-layout class="px-4 py-3 sm:px-8 sm:py-6 shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
                 <div class="flex items-start gap-x-4">
                     <div class="bg-purple-100 text-purple-500 border !border-purple-400 rounded-md w-fit p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
@@ -27,22 +27,23 @@
                     </div>
                     <div class="">
                         <div class="relative">
-                            <h2 class="text-[20px] font-semibold">Total Users</h2>
+                            <h2 class="text-[15px] sm:text-[20px] font-semibold">Total Users</h2>
                             <informationcircleicon class="absolute top-0 w-5 h-5 text-black left-[160px]">
                             </informationcircleicon>
                         </div>
                         <div class="mt-1">
-                            <h2 class="text-[20px] text-gray-400">12,224</h2>
+                            <h2 class="text-[15px]  sm:text-[20px] text-gray-400">12,224</h2>
                         </div>
 
                     </div>
 
                 </div>
-                <div class="font-medium text-gray-400 text-sm mt-4 text-end">
+                <div class="font-medium text-gray-400 
+text-xs sm:text-sm mt-4 text-end">
                     Since last month
                 </div>
             </table-layout>
-            <table-layout class="shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
+            <table-layout class="px-4 py-3 sm:px-8 sm:py-6 shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
                 <div class="flex items-start gap-x-4">
                     <div class="bg-red-100 text-red-500 border !border-red-400 rounded-md w-fit p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 16 16">
@@ -54,17 +55,17 @@
                     </div>
                     <div class="">
                         <div class="relative">
-                            <h2 class="text-[20px] font-semibold">All Time Revenue</h2>
+                            <h2 class="text-[15px] sm:text-[20px] font-semibold">All Time Revenue</h2>
                             <informationcircleicon class="absolute top-0 w-5 h-5 text-black left-[160px]">
                             </informationcircleicon>
                         </div>
                         <div class="mt-1">
-                            <h2 class="text-[20px] text-gray-400">$115,224</h2>
+                            <h2 class="text-[15px]  sm:text-[20px] text-gray-400">$115,224</h2>
                         </div>
                     </div>
                 </div>
             </table-layout>
-            <table-layout class="shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
+            <table-layout class="px-4 py-3 sm:px-8 sm:py-6 shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
                 <div class="flex items-start gap-x-4">
                     <div class="bg-green-100 text-green-600 border !border-green-400 rounded-md w-fit p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 26 26">
@@ -74,12 +75,12 @@
                     </div>
                     <div class="">
                         <div class="relative">
-                            <h2 class="text-[20px] font-semibold">Total Users</h2>
+                            <h2 class="text-[15px] sm:text-[20px] font-semibold">Total Users</h2>
                             <informationcircleicon class="absolute top-0 w-5 h-5 text-black left-[160px]">
                             </informationcircleicon>
                         </div>
                         <div class="mt-1">
-                            <h2 class="text-[20px] text-gray-400">12,224</h2>
+                            <h2 class="text-[15px]  sm:text-[20px] text-gray-400">12,224</h2>
                         </div>
                     </div>
                 </div>
@@ -87,7 +88,7 @@
             <UsersTable />
             <div class="md:col-span-3">
                
-                <table-layout class="shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
+                <table-layout class="px-4 py-3 sm:px-8 sm:py-6 shadow-sm border !border-gray-200 hover:!shadow-xl !mt-0">
                     <h1 class="mb-3 text-xl font-medium">Demographics</h1>
                     <table class="w-full">
                     <tr>
