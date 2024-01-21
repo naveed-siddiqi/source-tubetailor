@@ -168,7 +168,7 @@ import axios from 'axios';
 import { ref } from "vue";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://backend.tubetailor.ai/public/api/';
+axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
 async function youtubeConnect() {

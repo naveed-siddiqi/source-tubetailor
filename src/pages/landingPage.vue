@@ -1185,7 +1185,7 @@ const togglePlay = () => {
 
 // APIs Below
 
-const api_baseURL = 'https://backend.tubetailor.ai/public/api/';
+const api_baseURL = 'https://backend.tubetailor.ai/api/';
 
 import axios from 'axios';
 axios.defaults.withCredentials = true;
