@@ -42,7 +42,9 @@
                 <li><a href="contact.html">Contact us</a></li>
               </ul>
               <div class="nav-right">
-                <a href="signup.html" class="nav-btn">Sign In</a>
+                <a href="javascript:;" class="nav-btn" @click="login">Sign In</a>
+                <a href="javascript:;" class="nav-btn" @click="profile">Profile</a>
+                <a href="javascript:;" class="nav-btn" @click="logout">Logout</a>
               </div>
             </div>
           </nav>
@@ -58,6 +60,7 @@
           <div class="row align-items-center">
             <div class="col-lg-6 pix-order-2">
               <div class="banner-content">
+                {{ user }}
                 <h1 class="banner-title wow pixFadeUp" data-wow-delay="0.3s">
                   Revolutionize
                   <span
@@ -1178,6 +1181,37 @@ const togglePlay = () => {
   }
   isPlaying.value = !isPlaying.value;
 };
+
+
+// APIs Below
+
+const api_baseURL = 'https://backend.tubetailor.ai/public/api/';
+
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = api_baseURL;
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+// When returned after login, set token in localstorage and also remove token param from URL (Frontend developer can modify it, if developer has better approach)
+const urlParams = new URLSearchParams(window.location.search);
+if( urlParams.has('token') ){
+  localStorage.setItem('token', urlParams.get('token'));
+  window.location.href = window.location.origin;
+}
+
+function login() {
+    window.location.href = `${api_baseURL}login`;
+}
+
+const user = ref();
+async function profile() {
+    let {data} = await axios.get('profile');
+    user.value = data;
+}
+
+async function logout() {
+    await axios.post('logout');
+}
 </script>
 
 <style scoped></style>
