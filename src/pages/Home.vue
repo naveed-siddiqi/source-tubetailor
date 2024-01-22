@@ -5,7 +5,7 @@
       <table-layout>
         <div class="pb-5 sm:flex sm:items-center sm:justify-between">
           <h3 class="text-[20px] font-[800] leading-6 text-gray-900">
-            Total uploads: 20 videos (12 shorts | 8 long videos)
+            Total uploads: {{overview.total_uploads}} videos (12 shorts | 8 long videos)
           </h3>
 
           <div class="mt-3 sm:ml-4 sm:mt-0">
@@ -31,7 +31,7 @@
                   />
                 </svg>
               </div>
-              <span>Add your channel</span>
+              <span @click="youtubeConnect">Add your channel</span>
             </button>
           </div>
         </div>
@@ -42,7 +42,7 @@
             class="h-14 w-14 border-2 border-youtubes rounded-full"
             alt=""
           />
-          <h1 class="font-semibold underline text-3xl">Nafeh L.</h1>
+          <h1 class="font-semibold underline text-3xl">{{overview.channel_title}}</h1>
         </div>
         <!-- stats -->
         <div class="py-6 bg-white">
@@ -160,6 +160,34 @@ const stats = [
     infoIcon: true,
   },
 ];
+
+
+// APIs Below
+
+import axios from 'axios';
+import { ref } from "vue";
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+async function youtubeConnect() {
+  // Note: Include 'Returned-To' header. Otherwise after youtube channel connect, it will redirect back to home page/domain.
+    let {data} = await axios.get('youtube/auth', {
+      headers: {
+        'Returned-To': window.location.href
+      }
+    });
+    window.location.href = data.target_url;
+}
+
+const overview = ref({total_uploads:0, channel_title:'', thumbnail:'', views:0, subscribers:0});
+async function youtubeOverview() {
+    let {data} = await axios.post('youtube/overview');
+    console.log('response => ', data);
+    overview.value = data;
+}
+// youtubeOverview();
 </script>
 
 <style lang="scss" scoped></style>
