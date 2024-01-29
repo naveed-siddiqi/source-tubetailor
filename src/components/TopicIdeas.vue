@@ -14,148 +14,104 @@
       </div>
       <div class="py-2 overflow-x-auto scrollbar">
         <div class="relative overflow-x-auto">
-          <table
-            class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-          >
-            <!-- Table header -->
-
-            <tr class="bg-[#414D61] text-white">
-              <th
-                class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium"
-              >
-                Title
-              </th>
-              <th
-                class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium"
-              >
-                Keyword
-              </th>
-              <th
-                class="px-4 py-2 text-left whitespace-nowrap text-[13px] font-medium"
-              >
-                Keyword difficulty
-              </th>
-              <th
-                class="px-4 py-2 text-left whitespace-nowrap text-[13px] font-medium"
-              >
-                Monthly search volume
-              </th>
-              <th
-                class="rounded-r-lg px-4 py-2 whitespace-nowrap text-left text-[13px] font-medium"
-              ></th>
-            </tr>
-            <tr>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-            </tr>
-            <!-- Table body -->
-            <tr class="py-2 rounded-lg">
-              <td class="td px-4 text-[13px]">
-                Lorem Ipsum is simply dummy text of the printing.
-              </td>
-              <td class="flex items-center justify-center gap-2 px-4 py-2 td">
-                <span
-                  class="rounded-full bg-[#EFF4FD] px-3 py-1 text-xs font-semibold"
-                  >Games</span
+          <template v-if="topicIdeas.length > 0">
+            <table
+              class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+            >
+              <!-- Table header -->
+              <tr class="bg-[#414D61] text-white">
+                <th
+                  class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium"
                 >
-              </td>
-              <td class="td px-4 py-2 text-[13px]">High</td>
-              <td class="td px-4 py-2 text-[13px]">24.9M</td>
-              <td class="px-4 py-2 td">
-                <button class="text-left text-[10px] text-[#004EB9] underline">
-                  Export to content generator
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-            </tr>
-            <tr class="">
-              <td class="td px-4 whitespace-nowrap py-2 text-[13px]">
-                Lorem Ipsum is simply dummy text of the printing.
-              </td>
-              <td
-                class="flex whitespace-nowrap items-center justify-center gap-2 px-4 py-2 td"
-              >
-                <span
-                  class="rounded-full bg-[#EFF4FD] px-3 py-1 text-xs font-semibold"
-                  >Music</span
+                  Title
+                </th>
+                <th
+                  class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium"
                 >
-              </td>
-              <td class="td px-4 py-2 text-[13px] whitespace-nowrap">High</td>
-              <td class="td px-4 py-2 text-[13px] whitespace-nowrap">24.9M</td>
-              <td class="px-4 py-2 rounded-r-lg td whitespace-nowrap">
-                <button class="text-left text-[10px] text-[#004EB9] underline">
-                  Export to content generator
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-              <td class="py-1"></td>
-            </tr>
-          </table>
+                  Keyword
+                </th>
+                <th
+                  class="px-4 py-2 text-left whitespace-nowrap text-[13px] font-medium"
+                >
+                  Keyword difficulty
+                </th>
+                <th
+                  class="px-4 py-2 text-left whitespace-nowrap text-[13px] font-medium"
+                >
+                  Monthly search volume
+                </th>
+                <th
+                  class="rounded-r-lg px-4 py-2 whitespace-nowrap text-left text-[13px] font-medium"
+                ></th>
+              </tr>
+              <!-- Table body -->
+              <tr v-for="(idea, index) in topicIdeas" :key="index" class="py-2 rounded-lg border-b border-gray-400">
+                <td class="px-4 text-[13px]">
+                  {{ idea.topic }}
+                </td>
+                <td class="flex items-center justify-center gap-2 px-4 py-2">
+                  <span
+                    class="rounded-full bg-[#EFF4FD] px-3 py-1 text-xs font-semibold"
+                  >{{ idea.keyword }}</span
+                  >
+                </td>
+                <td class="px-4 py-2 text-[13px]">{{ idea.topic_difficulty }}</td>
+                <td class="px-4 py-2 text-[13px]">{{ idea.monthly_search_volume }}</td>
+                <td class="px-4 py-2">
+                  <button class="text-left text-[10px] text-[#004EB9] underline">
+                    Export to content generator
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </template>
+          <template v-else>
+            <p class="text-[13px] text-red-600">Sorry! Unable to produce topic ideas. Unclear channel earlier uploads. {{ errorMsg }}</p>
+          </template>
         </div>
       </div>
     </div>
   </TableLayout>
 </template>
 
-<style>
-.border-color {
-  border: 1px solid rgba(134, 142, 156, 0.5);
-}
-.scrollbar::-webkit-scrollbar {
-  height: 3.46px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background-color: #fe4442;
-  border-radius: 12px;
-  width: 2px;
-}
-.scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-.table {
-  border-collapse: separate;
-  border-spacing: 0 0px;
-}
-.td {
-  border: solid 1px #000;
-  border-style: solid none;
-}
-.td:first-child {
-  border-left-style: solid;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.td:last-child {
-  border-right-style: solid;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
-}
-</style>
-
 <script>
 import TableLayout from "@/layouts/TableLayout.vue";
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
+axios.defaults.headers.common['Authorization'] = `Bearer 22|5TlSLTbUUXjTgVVnGz1jjVrwk3qa9p4KdSroxVYA37e4c6af`;
 
 export default {
   components: {
     TableLayout,
     InformationCircleIcon,
+  },
+  data() {
+    return {
+      topicIdeas: [],
+      errorMsg: "", // Added errorMsg variable
+    };
+  },
+  async mounted() {
+    await this.fetchTopicIdeas();
+  },
+  methods: {
+    async fetchTopicIdeas() {
+      try {
+        let { data } = await axios.get('youtube/topic-ideas');
+        console.log(data);
+
+        if (data.message && data.message.includes("Channel must have uploads")) {
+          this.errorMsg = data.message; // Set the errorMsg if the specified message is present
+        } else {
+          this.topicIdeas = data.topic_ideas;
+        }
+      } catch (error) {
+        console.error("Error fetching topic ideas:", error);
+      }
+    },
   },
 };
 </script>

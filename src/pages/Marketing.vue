@@ -7,24 +7,19 @@ import RedditContent from "@/components/RedditContent.vue";
 import TwitterContent from "@/components/TwitterContent.vue";
 import { useTab } from "@/store/counter";
 import Modal from "@/components/Modal.vue";
-
-const store = useTab();
-
-// import ref
 import { ref } from "vue";
 import ThreadsContent from "../components/ThreadsContent.vue";
 
-// use ref for state
+const store = useTab();
 const currentTab = ref(1);
-
-// change ref onclick
 const changeTab = (tab) => {
   currentTab.value = tab;
 };
-const showLoader = ref(false);
-function start(){
-  this.showLoader = !this.showLoader
-}
+// const showLoader = ref(false);
+// function start(){
+//   this.showLoader = !this.showLoader
+
+// }
 </script>
 
 <template>
@@ -33,8 +28,13 @@ function start(){
     <Modal :showLoader="showLoader"/>
 
     <div v-if="store.currentTab === 0" class="py-5 space-y-4">
-      <PasteScriptArea />
-      <div class="flex items-center justify-end">
+      <textarea
+          v-model="textValue"
+          placeholder="Paste script"
+          class="w-full h-64 px-4 py-4 bg-white outline-none rounded-xl bg-shadow">
+    </textarea>
+
+        <div class="flex items-center justify-end">
         <Modal :showLoader="showLoader"/>
           <button class="px-[40px] py-[6px] rounded-full bg-youtube text-white" @click="start()">
             Start
@@ -76,13 +76,13 @@ function start(){
             </button>
           </div>
           <div v-if="currentTab === 1">
-            <RedditContent />
+            <RedditContent :apiResponse="apiResponse.subreddits" />
           </div>
           <div v-if="currentTab === 2">
-            <TwitterContent />
+            <TwitterContent :apiResponse="apiResponse.tweets" />
           </div>
           <div v-if="currentTab === 3">
-            <ThreadsContent />
+            <ThreadsContent :apiResponse="apiResponse.threads" />
           </div>
         </TableLayout>
       </div>
@@ -194,10 +194,36 @@ function start(){
 </template>
 <script>
 import Modal from "@/components/Modal.vue";
+import { postRequest } from '../helper/api.js';
 
-const showLoader = ref(false);
-function start(){
-  this.showLoader = !this.showLoader
-}
+export default {
+  data() {
+    return {
+      textValue: "",
+      apiResponse: null,
+    };
+  },
+  components: {
+    PasteScriptArea,
+    RedditContent,
+  },
+  methods: {
+    updateTextValue(value){
+      this.textValue = value
+    },
+    async start(){
+      try {
+        const response = await postRequest("youtube/marketing", {
+          script: this.textValue,
+        });
+        console.log(response);
+
+        this.apiResponse = response;
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  },
+};
+
 </script>
-<style></style>
