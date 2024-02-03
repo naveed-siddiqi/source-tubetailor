@@ -30,7 +30,7 @@ import ImageEditor from "../components/ImageEditor.vue";
 import CircularBar from "../components/CircularBar.vue";
 import { useTab } from "@/store/counter";
 import { VueEditor } from "vue3-editor";
-
+import { onMounted } from "vue";
 import "vue3-circle-progress/dist/circle-progress.css";
 import InstaCircularBar from "@/components/Instagram/Optimization/InstaCircularBar.vue";
 import CircleProgress from "@/components/CircleProgress.vue";
@@ -113,4 +113,7 @@ import VuePictureCropper, { cropper } from "vue-picture-cropper";
 
 const pic = ref(null);
 const uploadInput = ref(null); // Define a ref for the file input element
+onMounted(() => {
+  localStorage.removeItem('topic')
+})
 </script>

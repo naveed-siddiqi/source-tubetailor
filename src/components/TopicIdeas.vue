@@ -58,7 +58,7 @@
                 <td class="px-4 py-2 text-[13px]">{{ idea.topic_difficulty }}</td>
                 <td class="px-4 py-2 text-[13px]">{{ idea.monthly_search_volume }}</td>
                 <td class="px-4 py-2">
-                  <button class="text-left text-[10px] text-[#004EB9] underline">
+                  <button @click="contentExport(idea.topic)" class="text-left text-[10px] text-[#004EB9] underline">
                     Export to content generator
                   </button>
                 </td>
@@ -73,7 +73,6 @@
     </div>
   </TableLayout>
 </template>
-
 <script>
 import TableLayout from "@/layouts/TableLayout.vue";
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
@@ -81,7 +80,7 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
-axios.defaults.headers.common['Authorization'] = `Bearer 22|5TlSLTbUUXjTgVVnGz1jjVrwk3qa9p4KdSroxVYA37e4c6af`;
+axios.defaults.headers.common['Authorization'] =`Bearer ${localStorage.getItem('token')}`;
 
 export default {
   components: {
@@ -91,27 +90,64 @@ export default {
   data() {
     return {
       topicIdeas: [],
-      errorMsg: "", // Added errorMsg variable
+      errorMsg: "",
     };
-  },
-  async mounted() {
-    await this.fetchTopicIdeas();
   },
   methods: {
     async fetchTopicIdeas() {
       try {
-        let { data } = await axios.get('youtube/topic-ideas');
-        console.log(data);
+        // Check for cached data in localStorage
+        const cachedData = localStorage.getItem('cachedTopicIdeas');
+        const cachedTimestamp = localStorage.getItem('topicIdeasTimestamp');
 
-        if (data.message && data.message.includes("Channel must have uploads")) {
-          this.errorMsg = data.message; // Set the errorMsg if the specified message is present
+        // If there is cached data and it's not older than 24 hours, use it
+        if (cachedData && cachedTimestamp && this.isWithin24Hours(cachedTimestamp)) {
+          const parsedData = JSON.parse(cachedData);
+          this.topicIdeas = parsedData.topicIdeas;
+          this.errorMsg = parsedData.errorMsg;
         } else {
-          this.topicIdeas = data.topic_ideas;
+          // If no cached data or it's older than 24 hours, make a new API call
+          const response = await axios.get('youtube/topic-ideas');
+          const data = response.data;
+
+          if (data && data.message && data.message.includes("Channel must have uploads")) {
+            this.errorMsg = data.message;
+          } else if (data && data.topic_ideas) {
+            this.topicIdeas = data.topic_ideas;
+          } else {
+            console.error('Unexpected API response structure:', data);
+          }
+
+          // Cache the API data and timestamp in localStorage
+          localStorage.setItem('cachedTopicIdeas', JSON.stringify({
+            topicIdeas: this.topicIdeas,
+            errorMsg: this.errorMsg
+          }));
+          localStorage.setItem('topicIdeasTimestamp', new Date().toISOString());
         }
       } catch (error) {
         console.error("Error fetching topic ideas:", error);
+        this.errorMsg = "Error fetching topic ideas. Please try again later.";
       }
     },
+    isWithin24Hours(timestamp) {
+      const now = new Date();
+      const storedTimestamp = new Date(timestamp);
+      const differenceInMilliseconds = now - storedTimestamp;
+      const hoursDifference = differenceInMilliseconds / (1000 * 60 * 60);
+
+      // Check if the stored timestamp is within the last 24 hours
+      return hoursDifference <= 24;
+    },
+    contentExport(value) {
+      console.log(value);
+      localStorage.setItem('topic', value);
+
+      this.$router.push({ path: '/content-generator' });
+    }
+  },
+  mounted() {
+    this.fetchTopicIdeas();
   },
 };
 </script>

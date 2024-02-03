@@ -7,7 +7,7 @@ const bgStyle = {
 <template>
   <div class="py-4 overflow-x-auto scrollbar">
     <div class="w-full min-w-max">
-      <div class="p-4 border rounded-lg">
+      <div v-if="apiResponse && apiResponse.length > 0" class="p-4 border rounded-lg">
         <div class="space-y-3">
           <div v-for="post in apiResponse"
             class="flex items-center justify-between gap-4 p-3 bg-white bg-shadow rounded-xl"
@@ -31,7 +31,7 @@ const bgStyle = {
               </p>
             </div>
             <div>
-              <button class="text-gray-600">
+              <button @click="copyText(post.post)" class="text-gray-600">
                 <svg
                   width="20"
                   height="20"
@@ -55,11 +55,22 @@ const bgStyle = {
   </div>
 </template>
 <script>
+import clipboardCopy from 'clipboard-copy';
+
 export default {
   props: {
     apiResponse: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    copyText(textToCopy) {
+      clipboardCopy(textToCopy)
+        .then(() => {
+        })
+        .catch((err) => {
+        });
     },
   },
 };

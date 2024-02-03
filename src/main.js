@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import VueApexCharts from "vue3-apexcharts";
 import { VueClipboard } from "@soerenmartius/vue3-clipboard";
+import GlobalAlert from './components/Alert.vue';
 
 const pinia = createPinia();
 
@@ -14,3 +15,6 @@ createApp(App)
   .use(pinia)
   .use(VueClipboard)
   .mount("#app");
+  app.component('global-alert', GlobalAlert);
+
+  app.mount('#app');

@@ -25,21 +25,19 @@
           </tr>
         </thead>
         <tbody class="bg-white">
-          <tr class="even:bg-[#EFF4FD] text-wrap max-w-7xl"  v-for="subrredit in apiResponse">
+          <tr class="even:bg-[#EFF4FD] text-wrap max-w-7xl" v-for="(subreddit, index) in apiResponse" :key="index">
             <td
-              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[#4595FF] sm:pl-3"
+              class="whitespace-wrap py-4 pl-4 pr-3 text-sm font-medium text-[#4595FF] sm:pl-3 max-w-xs truncate"
             >
-              {{ subrredit.subreddit }}
+             <span class="text-wrap max-w-[100px]"> {{ subreddit?.subreddit }}</span>
             </td>
-            <td class="px-3 py-4 text-sm whitespace-nowrap">
-              {{ subrredit.title }}
-
+            <td class="px-3 py-4 text-sm whitespace-wrap truncate">
+              {{ subreddit?.title }}
             </td>
-
             <td
               class="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-3"
             >
-              <button class="text-gray-600 hover:text-indigo-900">
+              <button class="text-gray-600 hover:text-indigo-900" @click="copyText(subreddit.title)">
                 <svg
                   width="15"
                   height="15"
@@ -59,16 +57,28 @@
           </tr>
         </tbody>
       </table>
+
     </div>
   </div>
 </template>
 
 <script>
+import clipboardCopy from 'clipboard-copy';
+
 export default {
   props: {
     apiResponse: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    copyText(textToCopy) {
+      clipboardCopy(textToCopy)
+        .then(() => {
+        })
+        .catch((err) => {
+        });
     },
   },
 };
