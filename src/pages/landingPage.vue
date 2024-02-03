@@ -1182,9 +1182,6 @@ const togglePlay = () => {
   isPlaying.value = !isPlaying.value;
 };
 
-
-// APIs Below
-
 const api_baseURL = 'https://backend.tubetailor.ai/api/';
 
 import axios from 'axios';
@@ -1192,7 +1189,6 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = api_baseURL;
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
-// When returned after login, set token in localstorage and also remove token param from URL (Frontend developer can modify it, if developer has better approach)
 const urlParams = new URLSearchParams(window.location.search);
 if( urlParams.has('token') ){
   localStorage.setItem('token', urlParams.get('token'));

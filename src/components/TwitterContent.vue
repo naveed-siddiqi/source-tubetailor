@@ -7,9 +7,9 @@ const bgStyle = {
 <template>
   <div class="py-4 overflow-x-auto scrollbar">
     <div class="w-full min-w-max">
-      <div class="p-4 border rounded-lg">
+      <div v-if="apiResponse && apiResponse.length > 0" v-for="tweet in apiResponse" class="p-2 rounded-lg">
         <div class="space-y-3">
-          <div v-for="tweet in apiResponse"
+          <div 
             class="flex items-center justify-between gap-4 p-3 bg-white bg-shadow rounded-xl"
           >
             <div class="flex items-center gap-4">
@@ -27,14 +27,14 @@ const bgStyle = {
                 </svg>
               </div>
               <p class="text-[13px] text-wrap max-w-7xl">
-              {{ tweet.tweet }}
+              {{ tweet?.tweet }}
               </p>
             </div>
             <div>
-              <button class="text-gray-600">
+              <button class="text-gray-600 hover:text-indigo-900" @click="copyText(tweet.tweet)">
                 <svg
-                  width="20"
-                  height="20"
+                  width="15"
+                  height="15"
                   viewBox="0 0 15 15"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -55,11 +55,22 @@ const bgStyle = {
   </div>
 </template>
 <script>
+import clipboardCopy from 'clipboard-copy';
+
 export default {
   props: {
     apiResponse: {
       type: Object,
       default: null,
+    },
+  },
+  methods: {
+    copyText(textToCopy) {
+      clipboardCopy(textToCopy)
+        .then(() => {
+        })
+        .catch((err) => {
+        });
     },
   },
 };

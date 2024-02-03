@@ -96,6 +96,7 @@ const stats = [
     name: "Current Worth",
     value: "$120,000",
     infoIcon: true,
+    infoIcon:"the sss",
   },
   {
     id: 2,

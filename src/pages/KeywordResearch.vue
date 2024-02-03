@@ -13,7 +13,7 @@
           placeholder="Fitness"
         /> -->
           
-        <input v-model="textValue" id="keyword" type="text" class="w-full py-4 bg-white border-0  focus:bg-none focus:shadow-none" placeholder="Fitness" />
+        <input v-model="textValue"  @keyup.enter="start" id="keyword" type="text" class="w-full py-4 bg-white border-0  focus:bg-none focus:shadow-none" placeholder="Fitness" />
 
         <button @click="start()" >
           <label for="keyword">
@@ -133,11 +133,10 @@
                       </label>
                     </td>
                     <td class="px-3 py-4 text-sm whitespace-nowrap">
-                      {{ keywordData.difficulty }}
+                      {{keywordData.monthly_search_volume }} 
                     </td>
                     <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
-                      <span class="rounded-full text-white bg-[#FCC42D] px-3 py-1 text-[10px]">{{
-                        keywordData.monthly_search_volume }}</span>
+                      <span class="rounded-full text-white bg-[#FCC42D] px-3 py-1 text-[10px]">  {{ keywordData.difficulty }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -504,12 +503,14 @@ import {
 } from "@heroicons/vue/24/outline";
 import { CheckboxIndicator, CheckboxRoot } from "radix-vue";
 import { getRequestApi } from '../helper/api.js';
-
+import { onMounted } from "vue";
 const ytScore = ref(30);
 const instaScore = ref(50);
 const ttScore = ref(90);
 const store = useTab();
-
+onMounted(() => {
+  localStorage.removeItem('topic')
+});
 </script>
 <script>
 export default {
@@ -538,10 +539,6 @@ export default {
       return value.charAt(0).toUpperCase() + value.slice(1);
     },
     async start() {
-      if (!this.textValue.trim()) {
-        this.textValueValidationMessage = "Please write a script";
-        return;
-      }
       this.textValueValidationMessage = '';
       this.showLoader = true;
       try {
@@ -564,6 +561,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style scoped>
