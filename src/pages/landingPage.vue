@@ -1191,7 +1191,7 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
 const urlParams = new URLSearchParams(window.location.search);
 if( urlParams.has('token') ){
   localStorage.setItem('token', urlParams.get('token'));
-  window.location.href = 'https://source-tubetailor.vercel.app/';
+  // window.location.href = 'https://source-tubetailor.vercel.app/';
 }
 function login() {
     window.location.href = `${api_baseURL}login`;
