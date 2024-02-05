@@ -1,6 +1,19 @@
 <template>
   <MainLayout>
     <!-- Youtube -->
+    <div v-if="apiErrors.length > 0"   class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
+        <div class="mt-2 text-sm text-red-700">
+          <p>{{ apiErrors[0] }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
     <div v-if="store.currentTab === 0" class="">
       <table-layout>
         <div class="pb-5 sm:flex sm:items-center sm:justify-between">
@@ -9,7 +22,7 @@
           </h3>
 
           <div class="mt-3 sm:ml-4 sm:mt-0">
-            <button v-if="!isAccountAdded"
+            <button v-if="!overview.channel_title"
               type="button"
               class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white rounded-full shadow-sm bg-youtube focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             >
@@ -35,8 +48,9 @@
             </button>
           </div>
         </div>
+        <div v-if="!overview.channel_title" class="text-center">Please log in to view this data</div>
         <!-- {{ overview }} -->
-        <div class="flex items-center gap-3">
+        <div v-if="overview.channel_title" class="flex items-center gap-3">
           <img
             :src="overview.thumbnail"
             class="h-14 w-14 border-2 border-youtubes rounded-full"
@@ -49,7 +63,7 @@
         <!-- stats -->
         <div class="py-6 bg-white">
           <div class="">
-            <div class="">
+            <div v-if="overview.channel_title" class="">
               <dl
                 class="grid grid-cols-1 lg:divide-x gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4"
               >
@@ -185,8 +199,8 @@
           </div>
         </div>
       </table-layout>
-      <Analytics />
-      <TopicIdeas />
+      <Analytics v-if="overview.channel_title" />
+      <TopicIdeas v-if="overview.channel_title" />
     </div>
     <!-- Instagram -->
     <div class="" v-if="store.currentTab === 1">
@@ -220,7 +234,7 @@ import TiktokAnalytics from "../components/TikTok/Home/TiktokAnalytics.vue";
 import TiktokTopicIdeas from "../components/TikTok/Home/TiktokTopicIdeas.vue";
 import axios from "axios";
 import { ref } from "vue";
-
+const apiErrors = ref([]);
 const store = useTab();
 onMounted(() => {
   localStorage.removeItem('topic');
@@ -246,8 +260,7 @@ async function youtubeConnect() {
 }
 
 function checkAccountStatus() {
-  // Check if there is data in local storage that indicates the account is added
-  const accountData = localStorage.getItem('youtube'); // Replace with the actual key or data
+  const accountData = localStorage.getItem('youtube');
   isAccountAdded.value = !!accountData;
 }
 
@@ -280,7 +293,12 @@ async function youtubeOverview() {
     isAccountAdded.value = true;
   } catch (error) {
     console.error('Error in fetching overview data:', error);
+    apiErrors.value.push(error.response.data.message);
   }
+  setTimeout(() => {
+  apiErrors.value = [];
+}, 2000);
+
 }
 
 function isWithin24Hours(timestamp) {

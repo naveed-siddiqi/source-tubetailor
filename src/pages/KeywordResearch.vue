@@ -1,6 +1,19 @@
 <template>
   <MainLayout>
     <!-- youtube -->
+    <div v-if="apiErrors.length > 0"   class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
+        <div class="mt-2 text-sm text-red-700">
+          <p>{{ apiErrors[0] }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
     <div v-if="store.currentTab === 0" class="py-5 space-y-4">
       <span v-if="textValueValidationMessage" style="color: red;">{{ textValueValidationMessage }}</span>
 
@@ -508,11 +521,13 @@ const ytScore = ref(30);
 const instaScore = ref(50);
 const ttScore = ref(90);
 const store = useTab();
+
 onMounted(() => {
   localStorage.removeItem('topic')
 });
 </script>
 <script>
+const apiErrors = ref([]);
 export default {
   data() {
     return {
@@ -555,9 +570,13 @@ export default {
         };
         console.log(responseData);
       } catch (error) {
-      this.showLoader = false;
+        this.showLoader = false;
         console.error("Error:", error);
+        apiErrors.value.push(error.response.data.message);
       }
+      setTimeout(() => {
+            apiErrors.value = [];
+        }, 2000);
     }
   }
 };

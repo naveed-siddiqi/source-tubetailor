@@ -362,24 +362,24 @@ const navigation = [
     icon: Marketing,
     current: currentRoute.value === "/marketing",
   },
-  {
-    name: "Competetion",
-    href: "/competition",
-    icon: DollarSVG,
-    current: currentRoute.value === "/competition",
-  },
+  // {
+  //   name: "Competetion",
+  //   href: "/competition",
+  //   icon: DollarSVG,
+  //   current: currentRoute.value === "/competition",
+  // },
   {
     name: "Content Generator",
     href: "/content-generator",
     icon: Marketing,
     current: currentRoute.value === "/content-generator",
   },
-  {
-    name: "Community Tools",
-    href: "/community-tools",
-    icon: Marketing,
-    current: currentRoute.value === "/community-tools",
-  },
+  // {
+  //   name: "Community Tools",
+  //   href: "/community-tools",
+  //   icon: Marketing,
+  //   current: currentRoute.value === "/community-tools",
+  // },
 ];
 const teams = [
   { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
