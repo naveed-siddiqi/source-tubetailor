@@ -1194,7 +1194,7 @@ if (urlParams.has('token')) {
   // Remove the token parameter from the URL
   urlParams.delete('token');
   const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
-  window.history.replaceState({}, document.title, newUrl);
+  window.location.href = newUrl; // Redirect to the original URL
 }
 function login() {
   window.location.href = `${api_baseURL}login`;
