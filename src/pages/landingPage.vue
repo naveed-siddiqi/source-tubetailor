@@ -1183,28 +1183,24 @@ const togglePlay = () => {
 };
 
 const api_baseURL = 'https://backend.tubetailor.ai/api/';
-
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = api_baseURL;
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-
+// When returned after login, set token in localstorage and also remove token param from URL (Frontend developer can modify it, if developer has better approach)
 const urlParams = new URLSearchParams(window.location.search);
 if( urlParams.has('token') ){
   localStorage.setItem('token', urlParams.get('token'));
-  window.location.href = window.location.origin;
+  window.location.href = 'https://source-tubetailor.vercel.app/';
 }
-
 function login() {
     window.location.href = `${api_baseURL}login`;
 }
-
 const user = ref();
 async function profile() {
     let {data} = await axios.get('profile');
     user.value = data;
 }
-
 async function logout() {
     await axios.post('logout');
 }
