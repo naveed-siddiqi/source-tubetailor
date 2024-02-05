@@ -29,6 +29,19 @@ onMounted(() => {
 <template>
   <MainLayout>
     <!-- Youtube -->
+    <div v-if="apiErrors.length > 0"   class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
+        <div class="mt-2 text-sm text-red-700">
+          <p>{{ apiErrors[0] }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
     <Loader :showLoader="showLoader" />
     <span v-if="textValueValidationMessage" style="color: red">{{
       textValueValidationMessage
@@ -172,6 +185,7 @@ onMounted(() => {
 <script>
 import Loader from "@/components/Loader.vue";
 import { postRequest } from '../helper/api.js';
+const apiErrors = ref([]);
 
 export default {
   data() {
@@ -213,8 +227,13 @@ export default {
         this.showLoader = false;
         this.apiResponse = response;
       } catch (error) {
+        this.showLoader = false;
         console.error("Error:", error);
+        apiErrors.value.push(error.response.data.message);
       }
+      setTimeout(() => {
+            apiErrors.value = [];
+        }, 2000);
     },
     hideValidationMessage() {
       this.textValueValidationMessage = "";

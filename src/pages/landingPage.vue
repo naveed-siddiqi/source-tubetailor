@@ -1191,10 +1191,9 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('token')) {
   localStorage.setItem('token', urlParams.get('token'));
-  // Remove the token parameter from the URL
-  urlParams.delete('token');
-  const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
-  window.location.href = newUrl; // Redirect to the original URL
+  urlParams.delete('token'); // Remove token from URL
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}${window.location.hash}`;
+  history.replaceState(null, '', newUrl); // Update URL without reloading
 }
 function login() {
   window.location.href = `${api_baseURL}login`;

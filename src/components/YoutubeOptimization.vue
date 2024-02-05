@@ -1,5 +1,24 @@
 <template>
   <MainLayout>
+    <div
+      v-if="apiErrors.length > 0"
+      class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]"
+    >
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <ExclamationTriangleIcon
+            class="h-5 w-5 text-red-400"
+            aria-hidden="true"
+          />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>{{ apiErrors[0] }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="">
       <div class="py-5 space-y-4">
         <span v-if="textValueValidationMessage" style="color: red">{{
@@ -165,7 +184,8 @@
                   <span
                     class="cursor-pointer"
                     v-clipboard="apiResponse?.results[1].title"
-                    v-clipboard:success="onSuccess">
+                    v-clipboard:success="onSuccess"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -411,9 +431,11 @@
                 ></label>
 
                 <div v-if="apiResponse" class="flex flex-wrap gap-2">
-                  <span  v-for="(tag, tagIndex) in apiResponse.results.tags"
-                    :key="tagIndex" 
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px] whitespace-nowrap flex">{{ tag }}</span
+                  <span
+                    v-for="(tag, tagIndex) in apiResponse.results.tags"
+                    :key="tagIndex"
+                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px] whitespace-nowrap flex"
+                    >{{ tag }}</span
                   >
                 </div>
                 <div
@@ -915,7 +937,6 @@ import Modal from "@/components/Loader.vue";
 import Progress from "@/pages/Progress.vue";
 const media = ref({ added: [{ preview: "" }] });
 const imageUploaded = ref(false);
-
 const previewImage = () => {
   console.log(media.value);
 
@@ -1067,32 +1088,22 @@ async function getResult() {
   isShowModal.value = false;
 }
 
-/**
- * Clear the crop box
- */
 function clear() {
   if (!cropper) return;
   cropper.clear();
 }
 function cropImage() {
-  getResult(); // This function should handle the cropping logic
+  getResult();
 }
 import useToastHook from "../hooks/ToastMessage";
 const { showSuccessToast, showErrorToast } = useToastHook();
 const onSuccess = () => {
   showSuccessToast("Copied");
 };
-/**
- * Reset the default cropping area
- */
 function reset() {
   if (!cropper) return;
   cropper.reset();
 }
-
-/**
- * The ready event passed to Cropper.js
- */
 function ready() {
   console.log("Cropper is ready.");
 }
@@ -1104,7 +1115,7 @@ function ready() {
 <script>
 import { ref } from "vue";
 import { postRequest } from "../helper/api.js";
-
+const apiErrors = ref([]);
 export default {
   data() {
     return {
@@ -1120,15 +1131,11 @@ export default {
       this.textValue = value;
     },
     async youtubeOptimization() {
-      // Corrected the syntax here
-      // Check if textValue is null or empty
       if (!this.textValue.trim()) {
         this.textValueValidationMessage = "Please write a script";
         return;
       }
-
-      // If textValue is not null or empty, proceed with the API request
-      this.textValueValidationMessage = ""; // Clear the validation message
+      this.textValueValidationMessage = "";
       this.showLoader = true;
 
       try {
@@ -1137,25 +1144,23 @@ export default {
         });
 
         this.showLoader = false;
-
-        // Check if the API response contains a message property
         if (response.message) {
           this.textValueValidationMessage = response.message;
         } else {
-          // Handle other parts of your component based on the API response
           this.apiResponse = response;
         }
       } catch (error) {
         this.showLoader = false;
         console.error("Error:", error);
+        apiErrors.value.push(error.response.data.message);
       }
+      setTimeout(() => {
+        apiErrors.value = [];
+      }, 2000);
     },
     generateFunc() {
       this.loading = true;
-
-      // Simulate asynchronous operation
       setTimeout(() => {
-        // Once the generation is complete, set loading to false
         this.loading = false;
       }, 3000);
     },
