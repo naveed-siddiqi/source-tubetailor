@@ -1025,7 +1025,7 @@ function changeElementsTab(tab) {
 //change tab function
 
 function changeTab(tab) {
-  this.currentTab = tab;
+  currentTab.value = tab;
 }
 
 const testNow = () => {
