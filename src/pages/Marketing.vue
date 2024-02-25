@@ -1,244 +1,88 @@
-<script setup>
-import MainLayout from "@/layouts/MainLayout.vue";
-import Tabs from "@/components/Tabs.vue";
-import PasteScriptArea from "@/components/PasteScriptArea.vue";
-import TableLayout from "../layouts/TableLayout.vue";
-import RedditContent from "@/components/RedditContent.vue";
-import TwitterContent from "@/components/TwitterContent.vue";
-import { useTab } from "@/store/counter";
-import Modal from "@/components/Modal.vue";
-import { ref } from "vue";
-import ThreadsContent from "../components/ThreadsContent.vue";
-import { onMounted } from "vue";
-
-const store = useTab();
-const currentTab = ref(1);
-const changeTab = (tab) => {
-  currentTab.value = tab;
-};
-// const showLoader = ref(false);
-// function start(){
-//   this.showLoader = !this.showLoader
-
-// }
-onMounted(() => {
-  localStorage.removeItem('topic')
-});
-</script>
-
 <template>
   <MainLayout>
-    <!-- Youtube -->
-    <div v-if="apiErrors.length > 0"   class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+    <div class="flex items-center justify-between pb-2">
+      <h1 class="text-gray-500">This List is automatically refreshes after every 7 days. Save the competitors that you want to track.</h1>
+      <div class="">
+        <button v-if="savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Saved Topic Ideas</button>
+        <button v-if="!savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Topic Ideas</button>
       </div>
-      <div class="ml-3">
-        <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
-        <div class="mt-2 text-sm text-red-700">
-          <p>{{ apiErrors[0] }}</p>
+    </div>
+    <TableLayout class="!mt-0">
+      <div class="py-2 overflow-x-auto scrollbar">
+        <div class="relative overflow-x-auto">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <!-- Table header -->
+            <tr class="bg-[#414D61] text-white">
+              <th class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium">
+                Channel
+              </th>
+              <th class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium">
+                Total uploads
+              </th>
+              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
+                Total views
+              </th>
+              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
+                Subscribers
+              </th>
+              <th class="rounded-r-lg px-4 py-2 whitespace-nowrap text-left text-[13px] font-medium"></th>
+            </tr>
+            <!-- Table body -->
+            <tr v-for="(competitor, index) in competitors" :key="index"
+              class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
+              <td class="px-4 text-[13px]">
+                {{ competitor.channel }}
+              </td>
+              <td class="px-4 text-[13px]">
+                {{ competitor.total_Uploads }}
+              </td>
+              <td class="px-4 text-[13px]">
+                {{ competitor.Total_views }}
+              </td>
+              <td class="px-4 text-[13px]">
+                {{ competitor.Subscriber }}
+              </td>
+              <td class="px-4 py-2 text-end">
+                <button @click="saveCompetitor(index)"
+                  class="text-left text-[10px] underline whitespace-nowrap font-medium focus:outline-none">
+                  <svg v-if="isSaveCompetitor[index]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="w-5 h-5 text-[#FE4442]">
+                    <path fill-rule="evenodd"
+                      d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
-    </div>
-  </div>
-    <Loader :showLoader="showLoader" />
-    <span v-if="textValueValidationMessage" style="color: red">{{
-      textValueValidationMessage
-    }}</span>
-    <div v-if="store.currentTab === 0" class="py-5 space-y-4">
-      <textarea v-model="textValue" placeholder="Paste script"
-        class="w-full h-64 px-4 py-4 bg-white outline-none rounded-xl bg-shadow">
-    </textarea>
-
-      <div class="flex items-center justify-end">
-        <Modal :showLoader="showLoader" />
-        <button class="px-[40px] py-[6px] rounded-full bg-youtube text-white" @click="start()">
-          Start
-        </button>
-      </div>
-      <div>
-        <TableLayout>
-          <div class="flex items-center gap-2">
-            <button @click="changeTab(1)" :class="[
-              'px-3 py-2 text-xs border rounded-full',
-              currentTab === 1 ? 'bg-youtube text-white' : '',
-            ]">
-              Reddit
-            </button>
-            <button @click="changeTab(2)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 2
-                ? 'bg-youtube text-white border-[#fe4442]'
-                : '',
-            ]">
-              Twitter
-            </button>
-            <button @click="changeTab(3)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 3
-                ? 'bg-youtube text-white border-[#fe4442]'
-                : '',
-            ]">
-              Threads
-            </button>
-          </div>
-          <div v-if="currentTab === 1">
-            <RedditContent :apiResponse="apiResponse?.subreddits" />
-          </div>
-          <div v-if="currentTab === 2">
-            <TwitterContent :apiResponse="apiResponse?.tweets" />
-          </div>
-          <div v-if="currentTab === 3">
-            <ThreadsContent :apiResponse="apiResponse?.threads" />
-          </div>
-        </TableLayout>
-      </div>
-    </div>
-
-    <!-- Instagram -->
-    <div v-if="store.currentTab === 1" class="py-5 space-y-4">
-      <PasteScriptArea />
-      <div class="flex items-center justify-end">
-        <button class="px-[40px] py-[6px] rounded-full bg-insta text-white" @click="start()">
-          Start
-        </button>
-      </div>
-      <div>
-        <TableLayout>
-          <div class="flex items-center gap-2">
-            <button @click="changeTab(1)" :class="[
-              'px-3 py-2 text-xs border rounded-full',
-              currentTab === 1 ? 'bg-insta text-white' : '',
-            ]">
-              Reddit
-            </button>
-            <button @click="changeTab(2)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 2 ? 'bg-insta text-white  ' : '',
-            ]">
-              Twitter
-            </button>
-            <button @click="changeTab(3)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 3 ? 'bg-insta text-white  ' : '',
-            ]">
-              Threads
-            </button>
-          </div>
-          <div v-if="currentTab === 1">
-            <RedditContent />
-          </div>
-          <div v-if="currentTab === 2">
-            <TwitterContent />
-          </div>
-          <div v-if="currentTab === 3">
-            <ThreadsContent />
-          </div>
-        </TableLayout>
-      </div>
-    </div>
-    <!--Tiktok-->
-    <div v-if="store.currentTab === 2" class="py-5 space-y-4">
-      <PasteScriptArea />
-      <div class="flex items-center justify-end">
-        <button class="px-[40px] py-[6px] rounded-full bg-tiktok text-white" @click="start()">
-          Start
-        </button>
-      </div>
-      <div>
-        <TableLayout>
-          <div class="flex items-center gap-2">
-            <button @click="changeTab(1)" :class="[
-              'px-3 py-2 text-xs border rounded-full',
-              currentTab === 1 ? 'bg-tiktok text-white' : '',
-            ]">
-              Reddit
-            </button>
-            <button @click="changeTab(2)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 2 ? 'bg-tiktok text-white  ' : '',
-            ]">
-              Twitter
-            </button>
-            <button @click="changeTab(3)" :class="[
-              'px-3 py-2 text-xs border  rounded-full',
-              currentTab === 3 ? 'bg-tiktok text-white  ' : '',
-            ]">
-              Threads
-            </button>
-          </div>
-          <div v-if="currentTab === 1">
-            <RedditContent />
-          </div>
-          <div v-if="currentTab === 2">
-            <TwitterContent />
-          </div>
-          <div v-if="currentTab === 3">
-            <ThreadsContent />
-          </div>
-        </TableLayout>
-      </div>
-    </div>
+    </TableLayout>
   </MainLayout>
 </template>
-<script>
-import Loader from "@/components/Loader.vue";
-import { postRequest } from '../helper/api.js';
-const apiErrors = ref([]);
-
-export default {
-  data() {
-    return {
-      textValue: "",
-      apiResponse: null,
-      textValueValidationMessage: "",
-      showLoader: false,
-    };
-  },
-  components: {
-    PasteScriptArea,
-    RedditContent,
-  },
-  methods: {
-    updateTextValue(value) {
-      this.textValue = value
-    },
-
-    async start() {
-      if (!this.textValue.trim()) {
-        this.textValueValidationMessage = "Please write a script";
-
-        // Set a timer to hide the validation message after 2 seconds
-        setTimeout(() => {
-          this.hideValidationMessage();
-        }, 2000);
-
-        return;
-      }
-      this.showLoader = true;
-      try {
-     
-        const response = await postRequest("youtube/marketing", {
-          script: this.textValue,
-        });
-
-        console.log(response);
-        this.showLoader = false;
-        this.apiResponse = response;
-      } catch (error) {
-        this.showLoader = false;
-        console.error("Error:", error);
-        apiErrors.value.push(error.response.data.message);
-      }
-      setTimeout(() => {
-            apiErrors.value = [];
-        }, 2000);
-    },
-    hideValidationMessage() {
-      this.textValueValidationMessage = "";
-    }
-  },
-};
-
+<script setup>
+import MainLayout from "@/layouts/MainLayout.vue";
+import TableLayout from "@/layouts/TableLayout.vue";
+import { ref, onMounted } from 'vue';
+const isSaveCompetitor = ref([]);
+const savedTopic = ref([]);
+const viewSavedTopic = () =>{
+  savedTopic.value = !savedTopic.value;
+}
+const saveCompetitor = (index) => {
+  isSaveCompetitor.value[index] = !isSaveCompetitor.value[index];
+}
+const competitors = [
+  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
+  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
+  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
+  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
+  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
+  // More people...
+]
 </script>

@@ -65,8 +65,8 @@ const current = ref(store.currentTab);
 const isDropdownOpen = ref(false);
 const tabs = [
   { name: "Youtube", href: "#", logo: "https://w7.pngwing.com/pngs/208/269/png-transparent-youtube-play-button-computer-icons-youtube-youtube-logo-angle-rectangle-logo-thumbnail.png", current: false },
-  { name: "Instagram", href: "#", logo: "https://w7.pngwing.com/pngs/722/1011/png-transparent-logo-icon-instagram-logo-instagram-logo-purple-violet-text-thumbnail.png", current: false },
-  { name: "Tiktok", href: "#", logo: "https://w7.pngwing.com/pngs/959/454/png-transparent-tiktok-logo-thumbnail.png", current: true },
+  // { name: "Instagram", href: "#", logo: "https://w7.pngwing.com/pngs/722/1011/png-transparent-logo-icon-instagram-logo-instagram-logo-purple-violet-text-thumbnail.png", current: false },
+  // { name: "Tiktok", href: "#", logo: "https://w7.pngwing.com/pngs/959/454/png-transparent-tiktok-logo-thumbnail.png", current: true },
 ];
 
 
