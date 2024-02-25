@@ -41,8 +41,7 @@
                   <button
                     type="button"
                     class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-youtubes focus-visible:outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
-                    @click="open = false"
-                  >
+                    @click="open = false">
                     <p class="loading !text-[#333]">Loading</p>
                   </button>
                 </div>
@@ -65,13 +64,12 @@
     open.value = props.showLoader;
   });
   
-  // Function to close the modal
   const closeModal = () => {
     open.value = false;
   };
   
   onMounted(() => {
-    open.value = false; // Hide the modal when the component is mounted
+    open.value = false; 
   });
   </script>
   
@@ -92,10 +90,7 @@
       background-position: left top, left bottom;
     }
   }
-  
-  body {
-    background-color: #47d1da;
-  }
+
   p {
     text-align: center;
   }

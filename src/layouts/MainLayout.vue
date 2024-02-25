@@ -1,11 +1,7 @@
 <template>
   <div>
     <TransitionRoot as="template" :show="sidebarOpen">
-      <Dialog
-        as="div"
-        class="relative z-50 lg:hidden"
-        @close="sidebarOpen = false"
-      >
+      <Dialog as="div" class="relative z-50 lg:hidden" @close="sidebarOpen = false">
         <TransitionChild
           as="template"
           enter="transition-opacity ease-linear duration-300"
@@ -38,23 +34,15 @@
                 leave-from="opacity-100"
                 leave-to="opacity-0"
               >
-                <div
-                  class="absolute top-0 flex justify-center w-16 pt-5 left-full"
-                >
-                  <button
-                    type="button"
-                    class="-m-2.5 p-2.5"
-                    @click="sidebarOpen = false"
-                  >
+                <div class="absolute top-0 flex justify-center w-16 pt-5 left-full">
+                  <button type="button" class="-m-2.5 p-2.5" @click="sidebarOpen = false">
                     <span class="sr-only">Close sidebar</span>
                     <XMarkIcon class="w-6 h-6 text-white" aria-hidden="true" />
                   </button>
                 </div>
               </TransitionChild>
               <!-- Sidebar component, swap this element with another sidebar if you like -->
-              <div
-                class="flex flex-col px-6 pb-4 overflow-y-auto bg-white grow gap-y-5"
-              >
+              <div class="flex flex-col px-6 pb-4 overflow-y-auto bg-white grow gap-y-5">
                 <div class="flex items-center h-16 shrink-0">
                   <img class="w-auto h-12" :src="Logo" alt="Your Company" />
                 </div>
@@ -97,23 +85,20 @@
     </TransitionRoot>
 
     <!-- Static sidebar for desktop -->
-    <div
-      class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col"
-    >
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div
-        class="example flex flex-col px-6 py-16 pb-4 overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5"
+        class="example flex flex-col px-6 py-4 pb-4 overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5"
       >
         <div class="flex items-center h-16 shrink-0">
           <img class="w-auto h-16" :src="Logo" alt="Your Company" />
         </div>
-     
+
         <nav class="flex flex-col flex-1">
-                 
-          <ul role="list" class="flex flex-col items-start mt-20 gap-y-7">
-            <li class="w-full">
+          <ul role="list" class="flex flex-col items-start mt-4 gap-y-7">
+            <!-- <li class="w-full">
               <Tabs />
-            </li>
+            </li> -->
             <li class="w-full">
               <ul role="list" class="-mx-2 space-y-2">
                 <li v-for="item in navigation" :key="item.name">
@@ -130,8 +115,8 @@
                       :is="item.icon"
                       :class="[
                         item.current
-                          ? 'text-indigo-600'
-                          : 'text-gray-400 group-hover:text-indigo-600',
+                          ? 'text-gray-900'
+                          : 'text-gray-900 group-hover:text-gray-900',
                         'h-6 w-6 shrink-0',
                       ]"
                       aria-hidden="true"
@@ -147,7 +132,6 @@
     </div>
 
     <div class="lg:pl-72 bg">
-    
       <div
         class="top-0 z-40 flex items-center h-24 px-4 shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8"
       >
@@ -160,11 +144,7 @@
             <h1 class="text-[20px] lg:block hidden font-extrabold">
               {{ store.headline }}
             </h1>
-            <img
-              class="w-auto h-10 rounded-full lg:hidden"
-              :src="smallLogo"
-              alt=""
-            />
+            <img class="w-auto h-10 rounded-full lg:hidden" :src="smallLogo" alt="" />
           </div>
           <div class="flex items-center gap-x-4 lg:gap-x-6">
             <!-- Profile dropdown -->
@@ -253,7 +233,7 @@
         </div>
       </div>
 
-      <main class="w-full min-h-screen py-10">
+      <main class="w-full min-h-screen pb-10">
         <div class="px-4 sm:px-6 lg:px-8">
           <slot />
         </div>
@@ -294,14 +274,15 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
 import DashSVG from "@/svgs/DashSVG.vue";
 import DollarSVG from "@/svgs/DollarSVG.vue";
 import Marketing from "@/svgs/Marketing.vue";
+import Competitors from "@/svgs/competitors.vue";
 import OptSVG from "@/svgs/OptSVG.vue";
 import { useRouter } from "vue-router";
 import { useHeadline } from "../store/Headline";
 
 const store = useHeadline();
-const show = ref(false)
-function  showModal(){
-  this.show = !this.show
+const show = ref(false);
+function showModal() {
+  this.show = !this.show;
 }
 //current route
 
@@ -318,8 +299,10 @@ onMounted(() => {
     store.setHeadline("Optimization");
   } else if (currentRoute0 === "/keyword-research") {
     store.setHeadline("Keyword Research");
-  } else if (currentRoute0 === "/marketing") {
-    store.setHeadline("Marketing");
+  } else if (currentRoute0 === "/competitors") {
+    store.setHeadline("Competitors");
+  } else if (currentRoute0 === "/history") {
+    store.setHeadline("History");
   } else if (currentRoute0 === "/competition") {
     store.setHeadline("Competition");
   } else if (currentRoute0 === "/content-generator") {
@@ -357,10 +340,16 @@ const navigation = [
     current: currentRoute.value === "/keyword-research",
   },
   {
-    name: "Marketing",
-    href: "/marketing",
-    icon: Marketing,
-    current: currentRoute.value === "/marketing",
+    name: "Competitors",
+    href: "/competitors",
+    icon: Competitors,
+    current: currentRoute.value === "/competitors",
+  },
+  {
+    name: "History",
+    href: "/history",
+    icon: CalendarIcon,
+    current: currentRoute.value === "/history",
   },
   // {
   //   name: "Competetion",
@@ -390,7 +379,6 @@ const userNavigation = [
   { name: "Your profile", href: "/account-Settings" },
   { name: "Sign out", href: "#" },
   { name: "Admin panel", href: "adminDashboard" },
-
 ];
 
 onMounted(() => {
@@ -398,7 +386,6 @@ onMounted(() => {
   console.log(currentRoute.value);
   console.log("====================================");
 });
-
 
 const sidebarOpen = ref(false);
 </script>

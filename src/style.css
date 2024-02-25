@@ -3,8 +3,45 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "MontBold";
+  src: url(../public/fonts/Mont-Bold.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MontReg";
+  src: url(../public/fonts/Mont-Regular.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MontSem";
+  src: url(../public/fonts/Mont-SemiBold.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
-  font-family: "Montserrat", sans-serif;
+  font-family: "MontReg";
+}
+::placeholder{
+  font-family: "MontSem";
+  font-size: 12px;
+}
+.font-normal{
+  font-family: "MontReg";
+}
+.font-medium{
+  font-family: "MontSem";
+}
+.font-semibold{
+  font-family: "MontSem";
+}
+.font-bold{
+  font-family: "MontBold";
 }
 .bg-insta {
   background-image: linear-gradient(

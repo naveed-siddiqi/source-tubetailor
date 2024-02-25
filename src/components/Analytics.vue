@@ -1,9 +1,13 @@
 <template>
+  <div class="mt-4">
+    <h2 class="text-xl font-bold">
+              Analytics
+    </h2>
+  </div>
   <TableLayout>
     <div class="">
-      <div class="flex flex-wrap items-center justify-between py-4 overflow-x-auto sm:space-y-3 lg:space-y-0 lg:space-x-4">
+      <div class="flex flex-wrap items-center justify-between overflow-x-auto sm:space-y-3 lg:space-y-0 lg:space-x-4">
         <div class="relative">
-          <h2 class="text-xl font-bold">Analytics</h2>
           <span class="absolute right-0 -top-2">
             <InformationCircleIcon class="absolute w-4 h-4" />
           </span>
@@ -31,7 +35,7 @@
       </div>
       <div class="py-2 overflow-x-auto scrollbar">
         <div class="w-full min-w-max">
-          <table v-if="!isLoading" class="w-full overflow-hidden bg-white rounded-lg">
+          <table v-if="!isLoading && projects.length > 0" class="w-full overflow-hidden bg-white rounded-lg">
             <thead class="bg-[#414D61] text-left text-white">
               <tr>
                 <th class="px-4 py-2 text-sm font-medium rounded-bl-lg">Top performer</th>
@@ -42,7 +46,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-if="!isLoading" v-for="(project, index) in projects" :key="index">
+              <tr v-for="(project, index) in projects" :key="index">
                 <td class="px-4 py-2 text-[13px]">{{ project.top }}</td>
                 <td class="px-4 py-2 text-[24px] font-semibold text-[#FE4442]">{{ project.views }}</td>
                 <td class="px-4 py-2 text-[24px] font-semibold text-[#FE4442]">{{ project.watchTime }}</td>
@@ -104,23 +108,27 @@ export default {
     return {
       currentTab: 1,
       tabs: [1, 2, 3],
-      projects: [],
+      projects: '',
       isLoading: false,
+      isErrorShowing : false,
+      performerCurrentTab:'',
+      apiError:'',
     };
   },
   methods: {
-    async fetchYoutubeTopPerformers() {
+  async fetchYoutubeTopPerformers() {
   this.isLoading = true;
 
-  // Check if cached data is available in localStorage for the current tab
   const cachedData = localStorage.getItem(`youtubeTopPerformers_${this.currentTab}`);
   const cachedTimestamp = localStorage.getItem(`youtubeTopPerformersTimestamp_${this.currentTab}`);
-
-  // If cached data exists and is not older than 24 hours, use it
+  this.performerCurrentTab = localStorage.getItem(`youtubeTopPerformers_${this.currentTab}`);
   if (cachedData && cachedTimestamp && this.isWithin24Hours(cachedTimestamp)) {
     this.projects = JSON.parse(cachedData);
     this.isLoading = false;
     return;
+  }
+  if (!cachedData || JSON.parse(cachedData).length === 0) {
+    this.isErrorShowing = true;
   }
 
   let lastNumberOfDays = '';
@@ -138,6 +146,13 @@ export default {
 
   try {
     const responseData = await getRequestApi(apiUrl, queryParams);
+    console.log('API Response Data:', responseData); // Log API response data
+    if ('message' in responseData) {
+      this.apiError = responseData.message; // Set apiError if 'message' property exists
+    } else {
+      this.apiError = ''; // Clear apiError if no error message
+    }
+
     this.isLoading = false;
 
     if (Array.isArray(responseData)) {
@@ -152,22 +167,20 @@ export default {
         likes_vs_dislikes: project.top_performer.likes_vs_dislikes,
       }));
 
-      // Cache the API data and timestamp in localStorage for the current tab
       localStorage.setItem(`youtubeTopPerformers_${this.currentTab}`, JSON.stringify(this.projects));
       localStorage.setItem(`youtubeTopPerformersTimestamp_${this.currentTab}`, new Date().toISOString());
     } else if (typeof responseData === 'object' && responseData !== null) {
       this.projects = [{
         id: responseData.id,
-        top: responseData.top_performer.video_title,
-        views: responseData.top_performer.views,
-        watchTime: responseData.top_performer.watch_time,
-        subscribersGained: responseData.top_performer.subscribers_gained,
-        likes: responseData.top_performer.likes,
-        disLikes: responseData.top_performer.dislikes,
-        likes_vs_dislikes: responseData.top_performer.likes_vs_dislikes,
+        top: responseData?.top_performer?.video_title,
+        views: responseData?.top_performer?.views,
+        watchTime: responseData?.top_performer?.watch_time,
+        subscribersGained: responseData?.top_performer?.subscribers_gained,
+        likes: responseData?.top_performer?.likes,
+        disLikes: responseData?.top_performer?.dislikes,
+        likes_vs_dislikes: responseData?.top_performer?.likes_vs_dislikes,
       }];
 
-      // Cache the API data and timestamp in localStorage for the current tab
       localStorage.setItem(`youtubeTopPerformers_${this.currentTab}`, JSON.stringify(this.projects));
       localStorage.setItem(`youtubeTopPerformersTimestamp_${this.currentTab}`, new Date().toISOString());
     } else {
@@ -175,7 +188,7 @@ export default {
     }
   } catch (error) {
     this.isLoading = false;
-    console.error('Error in fetching data:', error);
+    console.error('Error in fetching data:', error); // Log error message
   }
 },
     isWithin24Hours(timestamp) {

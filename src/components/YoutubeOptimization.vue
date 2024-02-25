@@ -1,15 +1,9 @@
 <template>
   <MainLayout>
-    <div
-      v-if="apiErrors.length > 0"
-      class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]"
-    >
+    <div v-if="apiErrors.length > 0" class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
       <div class="flex">
         <div class="flex-shrink-0">
-          <ExclamationTriangleIcon
-            class="h-5 w-5 text-red-400"
-            aria-hidden="true"
-          />
+          <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
         </div>
         <div class="ml-3">
           <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
@@ -20,892 +14,304 @@
       </div>
     </div>
     <div class="">
-      <div class="py-5 space-y-4">
-        <span v-if="textValueValidationMessage" style="color: red">{{
-          textValueValidationMessage
-        }}</span>
-        <textarea
-          v-model="textValue"
-          placeholder="Paste script"
-          class="w-full h-64 px-4 py-4 bg-white outline-none rounded-xl bg-shadow"
-        >
+      <div class="pb-5 space-y-4">
+        <span v-if="textValueValidationMessage" style="color: red">{{ textValueValidationMessage }}</span>
+        <textarea v-model="textValue" placeholder="Paste script"
+          class="w-full h-64 px-4 py-4 bg-white outline-none rounded-xl bg-shadow">
         </textarea>
 
         <div class="flex items-center justify-end">
           <Modal :showLoader="showLoader" />
-          <button
-            class="px-[40px] py-[6px] rounded-full bg-youtube text-white"
-            @click="youtubeOptimization()"
-          >
+          <button class="px-[40px] py-[6px] rounded-full bg-youtube text-white" @click="youtubeOptimization()">
             Start
           </button>
+          {{ showLoader.value }}
         </div>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div v-if="allresults.length !== 0" class="grid grid-cols-1 gap-4">
           <!-- Column 1 -->
           <div class="space-y-4 md:col-span-1">
             <!-- Row 1 -->
-            <div class="p-6 bg-white rounded-xl bg-shadow">
+
+            <div class="">
               <div class="flex items-center justify-between">
                 <div class="relative">
                   <h2 class="text-[20px] font-bold">Script score:</h2>
-                  <InformationCircleIcon
-                    class="absolute top-0 w-5 h-5 text-black left-[140px]"
-                  />
+                  <InformationCircleIcon class="absolute top-0 w-5 h-5 text-black left-[140px]" />
                 </div>
-                <div class="text-center">
-                  <p class="text-[12px] pb-2 font-semibold">Overall Score</p>
-                  <span
-                    :apiResponse="apiResponse?.score_out_of_10"
-                    class="px-2 py-1 lg:text-[16px] text-[14px] font-bold rounded-full bg-youtube text-white"
-                    >{{ apiResponse?.score_out_of_10.overall }}/10</span
-                  >
+                <div class="text-center flex items-center gap-x-3">
+                  <p class="text-[12px] font-semibold">Overall Score</p>
+                  <span :apiResponse="apiResponse?.score_out_of_10"
+                    class="px-3 py-1 lg:text-[16px] text-[14px] font-bold rounded-full bg-youtube text-white">{{
+                      score.overall }}/10</span>
                 </div>
               </div>
               <div class="min-w-full overflow-hidden">
-                <div
-                  class="example flex overflow-x-scroll gap-8 items-center justify-between py-4"
-                >
-                  <CircleProgress
-                    startColor="#ff0000"
-                    stopColor="#ffa500"
-                    :completedSteps="apiResponse?.score_out_of_10.clarity"
-                    :totalSteps="10"
-                    text="Content Quality"
-                  />
-                  <CircleProgress
-                    startColor="#ff0000"
-                    stopColor="#ffa500"
-                    :completedSteps="apiResponse?.score_out_of_10.originality"
-                    :totalSteps="10"
-                    text="Content Quality"
-                  />
-                  <CircleProgress
-                    startColor="#ff0000"
-                    stopColor="#ffa500"
-                    :completedSteps="apiResponse?.score_out_of_10.engagement"
-                    :totalSteps="10"
-                    text="Content Quality"
-                  />
-                  <CircleProgress
-                    startColor="#ff0000"
-                    stopColor="#ffa500"
-                    :completedSteps="apiResponse?.score_out_of_10.structure"
-                    :totalSteps="10"
-                    text="Content Quality"
-                  />
+                <div class="example flex overflow-x-scroll gap-8 items-center justify-between py-2">
+                  <div class="p-6 bg-white rounded-xl bg-shadow border w-full text-center">
+                    <CircleProgress startColor="#ff0000" stopColor="#ffa500"
+                      :completedSteps="score?.clarity" :totalSteps="10" text="Clarity" />
+                  </div>
+                  <div class="p-6 bg-white rounded-xl bg-shadow border w-full text-center">
+                    <CircleProgress startColor="#ff0000" stopColor="#ffa500"
+                      :completedSteps="score?.originality" :totalSteps="10" text="Originality" />
+                  </div>
+                  <div class="p-6 bg-white rounded-xl bg-shadow border w-full text-center">
+                    <CircleProgress startColor="#ff0000" stopColor="#ffa500"
+                      :completedSteps="score?.engagement" :totalSteps="10" text="Engagement" />
+                  </div>
+                  <div class="p-6 bg-white rounded-xl bg-shadow border w-full text-center">
+                    <CircleProgress startColor="#ff0000" stopColor="#ffa500"
+                      :completedSteps="score?.structure" :totalSteps="10" text="Structure" />
+                  </div>
                 </div>
               </div>
             </div>
-            <!-- Row 2 -->
-            <div class="p-4 space-y-2 bg-white rounded-xl bg-shadow">
-              <!-- Content for Row 2, Column 1 -->
-              <div class="flex items-center justify-start gap-2">
-                <button
-                  @click="changeTab(1)"
-                  :class="[
-                    'px-3 py-1.5 text-xs border rounded-full',
-                    currentTab === 1 ? 'bg-youtube text-white' : '',
-                  ]"
-                >
+            <div class="flex items-center justify-between">
+              <div class="relative w-fit pr-4">
+                <h2 class="text-[20px] font-bold">Title, Description, Tags, Thumbnail Ideas:</h2>
+                <InformationCircleIcon class="absolute top-0 w-5 h-5 text-black right-0" />
+              </div>
+              <div class="flex items-center justify-end gap-2">
+                <button @click="changeTab(1)" :class="[
+                  'px-3 py-1.5 text-xs border rounded-full',
+                  currentTab === 1 ? 'bg-youtube text-white' : '',
+                ]">
                   Result 1
                 </button>
-                <button
-                  @click="changeTab(2)"
-                  :class="[
-                    'px-3 py-1.5 text-xs border rounded-full',
-                    currentTab === 2
-                      ? 'bg-youtube text-white border-[#fe4442]'
-                      : '',
-                  ]"
-                >
+                <button @click="changeTab(2)" :class="[
+                  'px-3 py-1.5 text-xs border rounded-full',
+                  currentTab === 2
+                    ? 'bg-youtube text-white border-[#fe4442]'
+                    : '',
+                ]">
                   Result 2
                 </button>
-                <button
-                  @click="changeTab(3)"
-                  :class="[
-                    'px-3 py-1.5 text-xs border  rounded-full',
-                    currentTab === 3
-                      ? 'bg-youtube text-white border-[#fe4442]'
-                      : '',
-                  ]"
-                >
+                <button @click="changeTab(3)" :class="[
+                  'px-3 py-1.5 text-xs border  rounded-full',
+                  currentTab === 3
+                    ? 'bg-youtube text-white border-[#fe4442]'
+                    : '',
+                ]">
                   Result 3
                 </button>
               </div>
+            </div>
+            <div class="p-4 space-y-2 bg-white rounded-xl bg-shadow border">
               <div v-if="currentTab === 1" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                  ><span>Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended titles</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[0].title"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer" v-clipboard="recommendedTitle1" v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg>
+                  </span>
+                </label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[0].title"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                    disabled
-                  />
+                  <input disabled :value="recommendedTitle1"
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                  ><span>Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended titles</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[1].title"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer" v-clipboard="recommendedTitle2" v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg>
+                  </span>
+                </label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[1].title"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                    disabled
-                  />
+                  <input disabled :value="recommendedTitle2"
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                  ><span>Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended titles</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[2].title"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer" v-clipboard="recommendedTitle3" v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg>
+                  </span>
+                </label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[2].title"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                    disabled
-                  />
+                  <input disabled :value="recommendedTitle3"
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
                 </div>
               </div>
-              <div v-if="currentTab === 1" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Recommended descriptions</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[0].description"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+              <div v-if="currentTab === 1" class="py-2">
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended descriptions</span>
+                  <span class="cursor-pointer" v-clipboard="recommendedDescription1" v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> </span></label>
                 <div class="w-full">
-                  <textarea
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[0].description"
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
+                  <textarea disabled :value="recommendedDescription1" type="text" name=""
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
-                  <textarea
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
-                    placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
+                    id="">
+                  </textarea>
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Recommended descriptions</span>
-
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[1].description"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended descriptions</span>
+                  <span class="cursor-pointer" v-clipboard="recommendedDescription2"  v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> </span></label>
                 <div class="w-full">
-                  <textarea
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[1].description"
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
+                  <textarea disabled :value="recommendedDescription2" type="text" name=""
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
-                  <textarea
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
-                    placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
+                    id="">
+                  </textarea>
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Recommended descriptions</span>
-
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[2].description"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended descriptions</span>
+                  <span @click="onSuccess()" class="cursor-pointer" v-clipboard="recommendedDescription3"  v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> </span></label>
                 <div class="w-full">
-                  <textarea
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[2].description"
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
+                  <textarea disabled :value="recommendedDescription3" type="text" name=""
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
-                  <textarea
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md shadow outline-none h-36"
-                    placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
-                    id=""
-                  ></textarea>
+                    id="">
+                  </textarea>
                 </div>
               </div>
               <div class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Recommended tags</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Recommended tags</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results.tags"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span @click="onSuccess()" class="cursor-pointer" v-clipboard="tags" v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg>
+                  </span>
+                </label>
 
-                <div v-if="apiResponse" class="flex flex-wrap gap-2">
-                  <span
-                    v-for="(tag, tagIndex) in apiResponse.results.tags"
-                    :key="tagIndex"
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px] whitespace-nowrap flex"
-                    >{{ tag }}</span
-                  >
-                </div>
-                <div
-                  v-else
-                  class="flex flex-wrap items-center w-full gap-2 px-4 py-2 my-2 border border-gray-400 rounded-md shadow"
-                >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
-                  <span
-                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px]"
-                    >Tag 1</span
-                  >
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="(tag, tagIndex) in tags" :key="tagIndex"
+                    class="px-2 py-1 bg-[#EFF4FD] text-[#868E9C] rounded-full text-[10px] whitespace-nowrap flex">{{tag }}</span>
                 </div>
               </div>
               <div v-if="currentTab === 1" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Thumbnail ideas</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[0].thumbnail_idea"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer" 
+                  v-clipboard="recommendedIdea1"
+                    v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> 
+                  </span>
+                </label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[0].thumbnail_idea"
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
+                  <input :value="recommendedIdea1" type="text" name=""
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Thumbnail ideas</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[1].thumbnail_idea"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer"
+                  v-clipboard="recommendedIdea2"
+                    v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> </span></label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[1].thumbnail_idea"
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
+                  <input :value="recommendedIdea2" type="text" name=""
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label
-                  class="text-[16px] flex items-center justify-between font-semibold"
-                  for="title"
-                >
-                  <span>Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
+                  <span class="font-semibold">Thumbnail ideas</span>
 
-                  <span
-                    class="cursor-pointer"
-                    v-clipboard="apiResponse?.results[2].thumbnail_idea"
-                    v-clipboard:success="onSuccess"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"
-                      />
-                    </svg> </span
-                ></label>
+                  <span class="cursor-pointer" 
+                  v-clipboard="recommendedIdea3"
+                    v-clipboard:success="onSuccess">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                    </svg> </span></label>
                 <div class="w-full">
-                  <input
-                    v-if="apiResponse"
-                    v-model="apiResponse.results[2].thumbnail_idea"
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md shadow outline-none"
-                    placeholder="Our AI generates captivating, viewer-focused titles"
-                    id=""
-                  />
+                  <input :value="recommendedIdea3" type="text" name=""
+                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
+
             </div>
-          </div>
-
-          <!-- Column 2 -->
-          <div class="space-y-6 md:col-span-1">
-            <!-- Row 1 -->
-            <div class="px-6 py-8 space-y-4 bg-white bg-shadow rounded-xl">
-              <!-- Content for Row 1, Column 2 -->
-              <div class="relative">
-                <h2 class="text-[20px] font-bold">Thumbnail Generator :</h2>
-                <InformationCircleIcon
-                  class="absolute top-0 w-5 h-5 text-black left-[240px]"
-                />
-              </div>
-              <div
-                v-if="
-                  elementsTab === 2 ||
-                  elementsTab === 3 ||
-                  elementsTab === 1 ||
-                  imageUploaded === true
-                "
-              >
-                <div class="mb-4">
-                  <div class="">
-                    <section
-                      class="section"
-                      v-if="result.dataURL && result.blobURL"
-                    >
-                      <div class="preview relative">
-                        <Progress />
-                        <div class="w-full">
-                          <p
-                            @click="changeElementsTab(3)"
-                            class="absolute text-3xl text-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                            v-html="content"
-                          ></p>
-                        </div>
-                        <img
-                          class="w-full h-auto object-fit"
-                          :src="result.dataURL"
-                        />
-                      </div>
-                    </section>
-
-                    <div class="modal-wrap" v-if="isShowModal">
-                      <div class="modal-mask"></div>
-                      <div class="modal-scroll-view">
-                        <div class="modal">
-                          <div class="modal-title">
-                            <div class="flex items-center gap-4 my-4 tools">
-                              <button
-                                class="px-8 py-2 font-semibold rounded-full text-youtube"
-                                @click="clear"
-                              >
-                                clear
-                              </button>
-
-                              <button
-                                class="px-8 py-2 font-semibold text-white rounded-full crop-button bg-youtube"
-                                @click="cropImage"
-                              >
-                                Crop
-                              </button>
-                            </div>
-                          </div>
-
-                          <div class="modal-content">
-                            <!-- The component imported from `vue-picture-cropper` plugin -->
-                            <VuePictureCropper
-                              :boxStyle="{
-                                width: '100%',
-                                height: '100%',
-                                backgroundColor: '#f8f8f8',
-                                margin: 'auto',
-                              }"
-                              :img="pic"
-                              :options="{
-                                viewMode: 1,
-                                dragMode: 'crop',
-                                aspectRatio: 16 / 9,
-                              }"
-                              @ready="ready"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                v-if="imageUploaded === false"
-                class="flex items-center justify-center mx-auto aspect-[16/9] border border-gray-200 rounded shadow"
-              >
-                <div>
-                  <div v-if="!loading">
-                    <button
-                      @click="generateFunc"
-                      class="px-[40px] py-[6px] rounded-full bg-youtube text-white"
-                    >
-                      Generate
-                    </button>
-                  </div>
-
-                  <div class="text-center" v-if="loading">
-                    <p class="text-[12px] pt-3 font-semibold">Loading...</p>
-                    <div class="custom-loader"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Row 2 -->
-            <div class="p-4 space-y-4 bg-white bg-shadow rounded-xl">
-              <div class="flex items-center gap-2 font-semibold">
-                <button
-                  @click="changeElementsTab(1)"
-                  :class="[
-                    'border shadow text-center flex items-center flex-col w-28 p-3  rounded-lg',
-                    elementsTab === 1 ? 'bg-youtube text-white' : '',
-                  ]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="29"
-                    height="29"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5Zm10 0a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5ZM4 16a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3Zm10-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-6Z"
-                    />
-                  </svg>
-                  <span class="text-[16px]">Elements</span>
-                </button>
-                <button
-                  @click="changeElementsTab(2)"
-                  :class="[
-                    'border shadow text-center flex items-center flex-col w-28 p-3  rounded-lg',
-                    elementsTab === 2 ? 'bg-youtube text-white' : '',
-                  ]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="29"
-                    height="29"
-                    viewBox="0 0 24 24"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M7 18a4.6 4.4 0 0 1 0-9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1"
-                      />
-                      <path d="m9 15l3-3l3 3m-3-3v9" />
-                    </g>
-                  </svg>
-                  <span class="text-[16px]">Uploads</span>
-                </button>
-                <button
-                  @click="changeElementsTab(3)"
-                  :class="[
-                    'border shadow text-center flex items-center flex-col w-28 p-3  rounded-lg',
-                    elementsTab === 3 ? 'bg-youtube text-white' : '',
-                  ]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="29"
-                    height="29"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M3 7V5h14v2m-7-2v14m0 0h2m-2 0H8m5-5v-2h8v2m-4-2v7m0 0h-1.5m1.5 0h1.5"
-                    />
-                  </svg>
-                  <span class="text-[16px]">Text</span>
-                </button>
-              </div>
-
-              <div
-                class="p-4 border border-gray-300 rounded-lg shadow min-h-96"
-              >
-                <div v-if="elementsTab === 1">
-                  <Elements />
-                </div>
-
-                <div class="h-96" v-if="elementsTab === 2">
-                  <button
-                    class="w-full py-2 rounded-lg bg-black text-white relative"
-                  >
-                    Upload
-                    <input
-                      class="block w-full opacity-0 top-0 left-0 absolute h-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                      ref="uploadInput"
-                      type="file"
-                      id="dropzone-file"
-                      accept="image/jpg, image/jpeg, image/png, image/gif"
-                      @change="selectFile"
-                    />
+            <div>
+              <TableLayout>
+                <div class="flex items-center gap-2">
+                  <button @click="changeTabMarketing(1)" :class="[
+                    'px-3 py-2 text-xs border rounded-full',
+                    currentTabMarketing === 1 ? 'bg-youtube text-white' : '',
+                  ]">
+                    Reddit
                   </button>
-
-                  <div class="">
-                    <div class="p-4">
-                      <div
-                        class="p-4 mb-4 border-2 border-gray-300 border-dashed"
-                        @dragover.prevent="handleDrop"
-                        @drop="handleDrop"
-                      >
-                        <div class="flex items-center justify-center w-full">
-                          <label
-                            for="dropzone-file"
-                            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                          >
-                            <div
-                              class="flex flex-col items-center justify-center pt-5 pb-6"
-                            >
-                              <svg
-                                class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 16"
-                              >
-                                <path
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                />
-                              </svg>
-                              <p
-                                class="mb-2 text-sm text-gray-500 dark:text-gray-400"
-                              >
-                                <span class="font-semibold"
-                                  >Click to upload</span
-                                >
-                                or drag and drop
-                              </p>
-                              <p
-                                class="text-xs text-gray-500 dark:text-gray-400"
-                              >
-                                SVG, PNG, JPG, or GIF (MAX. 800x400px)
-                              </p>
-                            </div>
-                            <!-- <input
-                              @change="previewImage"
-                              type="file"
-                              ref="fileInput"
-                              id="dropzone-file"
-                              class="hidden"
-                              accept="image/*"
-                            /> -->
-
-                            <button class="select-picture">
-                              <input
-                                ref="uploadInput"
-                                type="file"
-                                id="dropzone-file"
-                                class="hidden"
-                                accept="image/jpg, image/jpeg, image/png, image/gif"
-                                @change="selectFile"
-                              />
-                            </button>
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <button @click="changeTabMarketing(2)" :class="[
+                    'px-3 py-2 text-xs border  rounded-full',
+                    currentTabMarketing === 2
+                      ? 'bg-youtube text-white border-[#fe4442]'
+                      : '',
+                  ]">
+                    Twitter
+                  </button>
+                  <button @click="changeTabMarketing(3)" :class="[
+                    'px-3 py-2 text-xs border  rounded-full',
+                    currentTabMarketing === 3
+                      ? 'bg-youtube text-white border-[#fe4442]'
+                      : '',
+                  ]">
+                    Threads
+                  </button>
                 </div>
-                <div v-if="elementsTab === 3">
-                  <VueEditor
-                    class="text-black bg-white border-gray-100 rounded-lg shadow-sm"
-                    v-model="content"
-                  >
-                  </VueEditor>
+                <div v-if="currentTabMarketing === 1">
+                  <RedditContent :apiResponse="apiResponse?.subreddits" />
                 </div>
-              </div>
+                <div v-if="currentTabMarketing === 2">
+                  <TwitterContent :apiResponse="apiResponse?.tweets" />
+                </div>
+                <div v-if="currentTabMarketing === 3">
+                  <ThreadsContent :apiResponse="apiResponse?.threads" />
+                </div>
+              </TableLayout>
             </div>
           </div>
         </div>
@@ -916,286 +322,125 @@
 </template>
 <script setup>
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
-import YoutubeOptimization from "@/components/YoutubeOptimization.vue";
-import Line from "@/components/Line.vue";
-import Tabs from "../components/Tabs.vue";
 import MainLayout from "../layouts/MainLayout.vue";
-import PasteScriptArea from "@/components/PasteScriptArea.vue";
-import Elements from "../components/Elements.vue";
 import { ref } from "vue";
-import Uploads from "../components/Uploads.vue";
-import ImageEditor from "../components/ImageEditor.vue";
-import CircularBar from "../components/CircularBar.vue";
 import { useTab } from "@/store/counter";
-import { VueEditor } from "vue3-editor";
-
+import Tabs from "@/components/Tabs.vue";
+import TableLayout from "../layouts/TableLayout.vue";
+import RedditContent from "@/components/RedditContent.vue";
+import TwitterContent from "@/components/TwitterContent.vue";
+import ThreadsContent from "../components/ThreadsContent.vue";
+import { onMounted } from "vue";
 import "vue3-circle-progress/dist/circle-progress.css";
-import InstaCircularBar from "@/components/Instagram/Optimization/InstaCircularBar.vue";
 import CircleProgress from "@/components/CircleProgress.vue";
-import { defineProps, defineEmits } from "vue";
+import useToastHook from "../hooks/ToastMessage";
+import { postRequest } from "../helper/api.js";
 import Modal from "@/components/Loader.vue";
-import Progress from "@/pages/Progress.vue";
-const media = ref({ added: [{ preview: "" }] });
-const imageUploaded = ref(false);
-const previewImage = () => {
-  console.log(media.value);
 
-  const fileInput = document.getElementById("dropzone-file");
-  const files = fileInput.files;
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
-    if (file.type.startsWith("image/")) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        media.value.added.push({
-          preview: e.target.result,
-          name: file.name,
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-};
-
-const handleDrop = (event) => {
-  console.log(media.value.added);
-  event.preventDefault();
-
-  const files = event.dataTransfer.files;
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
-    if (file.type.startsWith("image/")) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        media.value.added.push({
-          preview: e.target.result,
-          name: file.name,
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }
-};
-
-const uploadImages = () => {
-  console.log(media.value.added);
-
-  // You can implement the image upload logic here
-  // Send the selected images to your server using an HTTP request (e.g., POST).
-  // You will need to construct a FormData object to send the images.
-  const formData = new FormData();
-
-  for (const image of media.value.added) {
-    // Assuming your server expects the file to be named 'image'
-    formData.append("image", image.preview);
-  }
-
-  // Example: Send a POST request to your server (replace with your API endpoint)
-  fetch("/api/upload", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      // Handle the server response, if needed
-      console.log("Upload response:", data);
-    })
-    .catch((error) => {
-      // Handle any errors during the upload
-      console.error("Upload error:", error);
-    });
-};
-const content = ref("Add text click Here");
-const store = useTab();
+const { showSuccessToast, showErrorToast } = useToastHook();
 const currentTab = ref(1);
+const currentTabMarketing = ref(1);
+const textValue = ref("");
+const apiResponse = ref(null);
+const textValueValidationMessage = ref("");
+const showLoader = ref(false);
+const apiErrors = ref([]);
+const recommendedTitle1 = ref('');
+const recommendedTitle2 = ref('');
+const recommendedTitle3 = ref('');
+const recommendedDescription1 = ref('');
+const recommendedDescription2 = ref('');
+const recommendedDescription3 = ref('');
+const recommendedIdea1 = ref('');
+const recommendedIdea2 = ref('');
+const recommendedIdea3 = ref('');
 
-const elementsTab = ref(1);
-
-function changeElementsTab(tab) {
-  elementsTab.value = tab;
-}
-//change tab function
+const allresults = ref([]);
+const result1 = ref({});
+const result2 = ref({});
+const result3 = ref({});
+const tags = ref([]);
+const score = ref({});
 
 function changeTab(tab) {
   currentTab.value = tab;
 }
-
-const testNow = () => {
-  alert("test");
-};
-
-import { reactive } from "vue";
-import VuePictureCropper, { cropper } from "vue-picture-cropper";
-
-const pic = ref(null);
-const uploadInput = ref(null); // Define a ref for the file input element
-
-const result = reactive({
-  dataURL: "",
-  blobURL: "",
-});
-
-const isShowModal = ref(false);
-
-function selectFile(e) {
-  // Reset last selection and results
-  pic.value = "";
-  result.dataURL = "";
-  result.blobURL = "";
-
-  // Get selected files
-  const { files } = e.target;
-  if (!files || !files.length) return;
-
-  // Convert to dataURL and pass to the cropper component
-  const file = files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => {
-    // Update the picture source of the `img` prop
-    pic.value = String(reader.result);
-
-    // Show the modal
-    isShowModal.value = true;
-
-    // Clear selected files of input element
-    if (!uploadInput.value) return;
-    uploadInput.value.value = "";
-  };
+function changeTabMarketing(tab) {
+  currentTabMarketing.value = tab;
 }
-
-async function getResult() {
-  if (!cropper) return;
-  const base64 = cropper.getDataURL();
-  const blob = await cropper.getBlob();
-  if (!blob) return;
-
-  const file = await cropper.getFile({
-    fileName: "kashif",
-  });
-
-  console.log({ base64, blob, file });
-  result.dataURL = base64;
-  result.blobURL = URL.createObjectURL(blob);
-  isShowModal.value = false;
-}
-
-function clear() {
-  if (!cropper) return;
-  cropper.clear();
-}
-function cropImage() {
-  getResult();
-}
-import useToastHook from "../hooks/ToastMessage";
-const { showSuccessToast, showErrorToast } = useToastHook();
 const onSuccess = () => {
   showSuccessToast("Copied");
 };
-function reset() {
-  if (!cropper) return;
-  cropper.reset();
-}
-function ready() {
-  console.log("Cropper is ready.");
-}
-// change me hamza to show loading //
-// const generateFunc = () => {
-//   imageUploaded.value = true;
-// };
-</script>
-<script>
-import { ref } from "vue";
-import { postRequest } from "../helper/api.js";
-const apiErrors = ref([]);
-export default {
-  data() {
-    return {
-      textValue: "",
-      apiResponse: null,
-      loading: false,
-      showLoader: false,
-      textValueValidationMessage: "",
-    };
-  },
-  methods: {
-    updateTextValue(value) {
-      this.textValue = value;
-    },
-    async youtubeOptimization() {
-      if (!this.textValue.trim()) {
-        this.textValueValidationMessage = "Please write a script";
-        return;
-      }
-      this.textValueValidationMessage = "";
-      this.showLoader = true;
 
-      try {
-        const response = await postRequest("youtube/optimization", {
-          script: this.textValue,
-        });
-
-        this.showLoader = false;
-        if (response.message) {
-          this.textValueValidationMessage = response.message;
-        } else {
-          this.apiResponse = response;
-        }
-      } catch (error) {
-        this.showLoader = false;
-        console.error("Error:", error);
-        apiErrors.value.push(error.response.data.message);
-      }
-      setTimeout(() => {
-        apiErrors.value = [];
-      }, 2000);
-    },
-    generateFunc() {
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-      }, 3000);
-    },
-  },
-};
-</script>
-
-<style scoped>
-.bg-shadow {
-  fill: #ffff;
-  filter: drop-shadow(0px 10px 30px rgba(227, 235, 249, 0.5));
-}
-
-.custom-loader {
-  width: 200px;
-  height: 25px;
-  border-radius: 20px;
-  color: #ffa500;
-  border: 2px solid;
-  position: relative;
-}
-
-.custom-loader::before {
-  content: "";
-  position: absolute;
-  margin: 2px;
-  inset: 0 100% 0 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #ff0000 0%, #ffa500 100%);
-  animation: p6 10s infinite;
-}
-
-@keyframes p6 {
-  100% {
-    inset: 0;
+async function youtubeOptimization() {
+  if (!textValue.value.trim()) {
+    textValueValidationMessage.value = "Please write a script";
+    return;
   }
+  textValueValidationMessage.value = "";
+  showLoader.value = true;
+
+  let completedRequests = 0;
+
+  try {
+    const optimizationResponse = await postRequest("youtube/optimization", {
+      script: textValue.value,
+    });
+
+    console.log(optimizationResponse.results, 'data');
+    allresults.value = optimizationResponse.results;
+    score.value = optimizationResponse.score_out_of_10;
+    result1.value = optimizationResponse.results[0];
+    result2.value = optimizationResponse.results[1];
+    result3.value = optimizationResponse.results[2];
+    tags.value = optimizationResponse.results.tags;
+    recommendedTitle1.value = result1.value.title
+    recommendedTitle2.value = result2.value.title
+    recommendedTitle3.value = result3.value.title
+    recommendedDescription1.value = result1.value.description
+    recommendedDescription2.value = result2.value.description
+    recommendedDescription3.value = result3.value.description
+    recommendedIdea1.value = result1.value.description
+    recommendedIdea2.value = result2.value.description
+    recommendedIdea3.value = result3.value.description
+    // showLoader.value = false;
+
+    // return;
+    if (optimizationResponse.message) {
+      textValueValidationMessage.value = optimizationResponse.message;
+    } else {
+      apiResponse.value = optimizationResponse;
+    }
+    completedRequests++; 
+  } catch (error) {
+    console.error("Error in YouTube optimization:", error);
+    showErrorToast(error.response?.data?.message || "An error occurred during YouTube optimization");
+    apiErrors.value.push(error.response?.data?.message || "An error occurred during YouTube optimization");
+    completedRequests++; 
+  }
+  console.log(apiResponse.value);
+  console.log(showLoader.value)
+  try {
+    const marketingResponse = await postRequest("youtube/marketing", {
+      script: textValue.value,
+    });
+    apiResponse.value = marketingResponse;
+    showLoader.value = false;
+    completedRequests++; 
+  } catch (error) {
+    console.error("Error in YouTube marketing:", error);
+    showErrorToast(error.response?.data?.message || "An error occurred during YouTube marketing");
+    apiErrors.value.push(error.response?.data?.message || "An error occurred during YouTube marketing");
+    completedRequests++; 
+  }
+
+  if (completedRequests === 2) {
+    showLoader.value = false; 
+  }
+
+  setTimeout(() => {
+    apiErrors.value = [];
+  }, 2000);
 }
-</style>
+
+</script>

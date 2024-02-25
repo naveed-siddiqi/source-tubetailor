@@ -1,103 +1,97 @@
 <template>
   <MainLayout>
-    <div v-if="apiErrors.length > 0"   class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]">
-    <div class="flex">
-      <div class="flex-shrink-0">
-        <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
-      </div>
-      <div class="ml-3">
-        <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
-        <div class="mt-2 text-sm text-red-700">
-          <p>{{ apiErrors[0] }}</p>
+    <div
+      v-if="apiErrors.length > 0"
+      class="rounded-md bg-red-50 p-4 sticky top-0 z-[9999]"
+    >
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <ExclamationTriangleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Attention needed</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>{{ apiErrors[0] }}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
     <!-- Youtube -->
-    <Modal :showLoader="showLoader"/>
+    <Modal :showLoader="showLoader" />
 
-    <div v-if="store.currentTab === 0" class="py-5 space-y-4">
+    <div v-if="store.currentTab === 0" class="pb-5 space-y-4">
       <span v-if="textValueValidationMessage" style="color: red">{{
-          textValueValidationMessage
-        }}</span>
+        textValueValidationMessage
+      }}</span>
       <div>
-        <textarea v-model="textValue"
-          class="w-full h-64 px-4 py-4 bg-white rounded-lg outline-none bg-shadow"
+        <input
+          v-model="textValue"
+          class="w-full px-4 py-4 bg-white rounded-xl outline-none bg-shadow"
           type="text"
           placeholder="Enter script title"
         />
       </div>
+     <div class="grid sm:grid-cols-2">
       <div class="flex items-center gap-4">
         <label
-          class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
+          v-for="(checkbox, index) in checkboxes"
+          :key="index"
+          class="flex flex-row gap-4 items-center cursor-pointer"
         >
-          <CheckboxRoot
-            v-model="checkboxOne"
+          <input
+            type="radio"
+            v-model="selectedCheckbox"
+            :value="checkbox.value"
+            class="hidden"/>
+          <div
             class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none"
-          >
-            <CheckboxIndicator
-              class="flex items-center justify-center w-full h-full bg-youtube text-white rounded"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </CheckboxIndicator>
-          </CheckboxRoot>
-          <span class="select-none font-[16px]">Short </span>
-        </label>
-        <label
-          class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
-        >
-          <CheckboxRoot
-            v-model="checkboxOne"
-            class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none"
-          >
-            <CheckboxIndicator
-              class="flex items-center justify-center w-full h-full bg-youtube text-white rounded"
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
-                  fill="currentColor"
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-            </CheckboxIndicator>
-          </CheckboxRoot>
-          <span class="select-none font-[16px]">Long Video</span>
+            :class="{ 'bg-youtube text-white': selectedCheckbox === checkbox.value }">
+            <svg
+              v-if="selectedCheckbox === checkbox.value"
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg" >
+              <path
+                d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
+                fill="currentColor"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+          <span class="select-none font-[16px]">{{ checkbox.label }}</span>
         </label>
       </div>
+     <div class="flex items-center justify-between">
+      <div class="max-w-xs w-full ml-2">
+        <div>
+          <select id="location" name="location" class="bg-white block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-red-500 sm:text-sm sm:leading-6">
+            <option selected>English</option>
+            <option>German</option>
+            <option>Urdu</option>
+          </select>
+        </div>
+      </div>
       <div class="flex items-center justify-end py-2">
-        <Loader :showLoader="showLoader"/>
-        <button @click="ContentGenerate()" class="px-[40px] py-[6px] rounded-full bg-youtube text-white">
+        <Loader :showLoader="showLoader" />
+        <button
+          @click="ContentGenerate()"
+          class="px-[40px] py-[6px] rounded-full bg-youtube text-white"
+        >
           Generate
         </button>
       </div>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+     </div>
+     </div>
+      <div v-if="apiResponse?.script" class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <!-- First Column -->
         <div class="col-span-1">
           <!-- Content for the first column -->
           <div class="space-y-2">
             <!-- Your content here -->
-            <div class="p-4 bg-white bg-shadow rounded-xl">
+            <div class="p-4 bg-white bg-shadow rounded-xl border">
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Script:</h2>
                 <button @click="copyText(apiResponse?.script)" class="text-gray-600">
@@ -131,7 +125,7 @@
           <!-- Content for the second column -->
           <div class="">
             <!-- Content 1 in the second column -->
-            <div class="p-4 mb-4 bg-white bg-shadow rounded-xl">
+            <div class="p-4 bg-white bg-shadow rounded-xl border">
               <!-- Your content here -->
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Description:</h2>
@@ -152,13 +146,13 @@
                   </svg>
                 </button>
               </div>
-              <div class="space-y-6 pb-2 text-[13px] text-[#868E9C]">
+              <div class="space-y-6 text-[13px] text-[#868E9C]">
                 {{ apiResponse?.description }}
               </div>
             </div>
 
             <!-- Content 2 in the second column -->
-            <div class="p-4 mb-4 bg-white bg-shadow rounded-xl">
+            <div class="p-4 bg-white bg-shadow rounded-xl border md:col-span-2 mt-4">
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Hashtags:</h2>
                 <button @click="copyText(apiResponse?.tags)" class="text-gray-600">
@@ -178,117 +172,171 @@
                   </svg>
                 </button>
               </div>
-              <div  class="flex flex-wrap items-center justify-start gap-2">
-                <span v-for="tag in apiResponse.tags" :key="tag"
+              <div class="flex flex-wrap items-center justify-start gap-2">
+                <span
+                  v-for="tag in apiResponse.tags"
+                  :key="tag"
                   class="text-[#868E9C] bg-[#EFF4FD] px-3 py-1 font-semibold text-[10px] rounded-full flex"
-                  >{{ tag }}</span>
+                  >{{ tag }}</span
+                >
               </div>
+             
             </div>
+           </div>
+           
+        </div> 
+               <div class="text-end md:col-span-2">
+                <button class="bg-blue-700 px-3  py-2 rounded-md text-white outline outline-offset-2 outline-2">Export to Optimization</button>
+              </div>
 
-            <!-- Content 3 in the second column -->
-            <div class="p-4 bg-white bg-shadow rounded-xl">
+            <div class="p-4 bg-white bg-shadow rounded-xl border md:col-span-2">
               <!-- Your content here -->
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Voiceover:</h2>
-                <button  class="text-black">
+              </div>
+             <div class="grid grid-cols-2 gap-4">
+              <div class="">
+                <Listbox as="div" v-model="selected">
+                <div class="relative mt-2">
+                  <ListboxButton
+                    class="relative w-full cursor-default bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 focus:outline-none sm:text-sm sm:leading-6 border border-gray-200 rounded-full"
+                  >
+                    <span class="inline-flex w-full truncate gap-4">
+                      <div class="inline-flex w-full truncate gap-1">
+                        <span class="truncate">{{ selected?.id }}</span>
+                        <span class="ml-2 truncate text-gray-500">{{
+                          selected?.gender
+                        }}</span>
+                      </div>
+                      <span
+                        v-if="selected?.child"
+                        class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10"
+                        >Child</span
+                      >
+                    </span>
+                    <span
+                      class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
+                    >
+                      <ChevronUpDownIcon
+                        class="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </ListboxButton>
+
+                  <transition
+                    leave-active-class="transition ease-in duration-100"
+                    leave-from-class="opacity-100"
+                    leave-to-class="opacity-0"
+                  >
+                    <ListboxOptions
+                      class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                    >
+                      <ListboxOption
+                        as="template"
+                        v-for="voice in peopleVoiceOver"
+                        :key="voice.id"
+                        :value="voice"
+                        v-slot="{ active, selected }"
+                      >
+                        <li
+                          @mouseover="toggleAudio(true)"
+                          @mouseleave="toggleAudio(false)"
+                          @click="selectVoice(voice)"
+                          :class="[
+                            active ? 'bg-gray-400 text-white' : 'text-gray-900',
+                            'relative cursor-pointer select-none py-2 pl-3 pr-9 border-b group',
+                          ]"
+                        >
+                          <span
+                            v-if="selected"
+                            :class="[
+                              active ? 'text-white' : 'text-gray-600',
+                              'absolute inset-y-0 left-2 flex items-center pr-4',
+                            ]"
+                          >
+                            <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                          </span>
+                          <div class="flex items-center justify-between ml-3">
+                            <div class="flex gap-4">
+                              <div class="flex">
+                                <span
+                                  :class="[
+                                    selected ? 'font-semibold' : 'font-normal',
+                                    'truncate',
+                                  ]"
+                                  >{{ voice?.id }}</span
+                                >
+                                <span
+                                  :class="[
+                                    active ? 'text-gray-900' : 'text-gray-500',
+                                    'ml-2 truncate',
+                                  ]"
+                                  >{{ voice?.gender }}</span
+                                >
+                              </div>
+                              <span
+                                v-if="voice?.child"
+                                class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10"
+                                >Child</span
+                              >
+                            </div>
+                            <audio
+                              ref="audio"
+                              controls
+                              class="w-[100px] h-[30px] text-red-900">
+                              <source :src="voice.link" type="audio/mp3" />
+                              Your browser does not support the audio element.
+                            </audio>
+                          </div>
+                        </li>
+                      </ListboxOption>
+                    </ListboxOptions>
+                  </transition>
+                </div>
+              </Listbox>
+              <!-- v-if="this.apiResponse?.script.length > 0" -->
+              <div class="flex flex-col gap-4 items-start py-4">
+                <div class="flex justify-end w-full">
+                  <button
+          
+                    class="px-[40px] py-[6px] rounded-full bg-youtube text-white"
+                    @click="voiceover()">
+                    Generate
+                  </button>
+                </div>
+              </div>
+              </div>
+              <div v-if="!showLoader" class="">
+                <audio v-if="!showLoader" controls class="w-full invisible h-0">
+                  <source :src="voiceOverResult" type="audio/mp3" />
+                  Your browser does not support the audio element.
+                </audio>
+                <audio class="w-full" v-if="!showLoader" controls>
+                  <source :src="voiceOverResult" type="audio/ogg" />
+                  <source :src="voiceOverResult" type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+                <div class="flex items-center justify-end mt-3">
+                  <a v-if="voiceOverResult" :href="voiceOverResult" class="text-black" download>
                   <svg
                     width="22"
                     height="22"
                     viewBox="0 0 15 15"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M7.50005 1.04999C7.74858 1.04999 7.95005 1.25146 7.95005 1.49999V8.41359L10.1819 6.18179C10.3576 6.00605 10.6425 6.00605 10.8182 6.18179C10.994 6.35753 10.994 6.64245 10.8182 6.81819L7.81825 9.81819C7.64251 9.99392 7.35759 9.99392 7.18185 9.81819L4.18185 6.81819C4.00611 6.64245 4.00611 6.35753 4.18185 6.18179C4.35759 6.00605 4.64251 6.00605 4.81825 6.18179L7.05005 8.41359V1.49999C7.05005 1.25146 7.25152 1.04999 7.50005 1.04999ZM2.5 10C2.77614 10 3 10.2239 3 10.5V12C3 12.5539 3.44565 13 3.99635 13H11.0012C11.5529 13 12 12.5528 12 12V10.5C12 10.2239 12.2239 10 12.5 10C12.7761 10 13 10.2239 13 10.5V12C13 13.1041 12.1062 14 11.0012 14H3.99635C2.89019 14 2 13.103 2 12V10.5C2 10.2239 2.22386 10 2.5 10Z"
                       fill="currentColor"
                       fill-rule="evenodd"
-                      clip-rule="evenodd"
-                    ></path>
+                      clip-rule="evenodd">
+                    </path>
                   </svg>
-                </button>
-              </div>
-              <Listbox as="div" v-model="selected">
-                  <div class="relative mt-2">
-                    <ListboxButton class="relative w-full cursor-default bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 focus:outline-none sm:text-sm sm:leading-6 border border-gray-200 rounded-full">
-                      <span class="inline-flex w-full truncate gap-4">
-                       <div class="inline-flex w-full truncate gap-1">
-                         <span class="truncate">{{ selected?.id }}</span>
-                        <span class="ml-2 truncate text-gray-500">{{ selected?.gender }}</span>
-                       </div>
-                        <span v-if="selected?.child" class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10">Child</span>
-                      </span>
-                      <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
-                      </span>
-                    </ListboxButton>
-
-                    <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
-                      <ListboxOptions class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        <ListboxOption as="template" v-for="voice in peopleVoiceOver" :key="voice.id" :value="voice" v-slot="{ active, selected }">
-                          <li @mouseover="toggleAudio(true)" @mouseleave="toggleAudio(false)" @click="selectVoice(voice)" :class="[active ? 'bg-gray-400 text-white' : 'text-gray-900', 'relative cursor-pointer select-none py-2 pl-3 pr-9 border-b group']">
-                            <span v-if="selected" :class="[active ? 'text-white' : 'text-gray-600', 'absolute inset-y-0 left-2 flex items-center pr-4']">
-                              <CheckIcon class="h-5 w-5" aria-hidden="true" />
-                            </span>
-                            <div class="flex items-center justify-between ml-3">
-                              <div class="flex gap-4">
-                            <div class="flex">
-                              <span :class="[selected ? 'font-semibold' : 'font-normal', 'truncate']">{{ voice?.id }}</span>
-                              <span :class="[active ? 'text-gray-900' : 'text-gray-500', 'ml-2 truncate']">{{ voice?.gender }}</span>
-                            </div>
-                              <span v-if="voice?.child" class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10">Child</span>
-
-                            </div>
-                            <audio ref="audio" controls class="w-[100px] h-[30px] text-red-900">
-                                  <source
-                                    :src="voice.link"
-                                    type="audio/mp3"
-                                  />
-                                  Your browser does not support the audio element.
-                               </audio>
-                            </div>
-                            
-                          </li>
-                        </ListboxOption>
-                      </ListboxOptions>
-                    </transition>
-                  </div>
-                </Listbox>
-              <div class="flex flex-col gap-4 items-start py-4">
-                <div class="flex flex-wrap items-center gap-4 w-full">
-                  <!-- <div v-for="voice in peopleVoiceOver" :key="voice.id">
-                      <p>ID: {{ voice.id }}</p>
-                      <p>Child: {{ voice.child }}</p>
-                      <p>Gender: {{ voice.gender }}</p>
-                      <audio :src="voice.link" controls></audio>
-                      <hr />
-                  </div> -->
-                </div>
-                <div class="flex justify-end w-full">
-                  <button v-if="this.apiResponse?.script.length > 0"
-                    class="px-[40px] py-[6px] rounded-full bg-youtube text-white" @click="voiceover()">
-                    Generate
-                  </button>
+                </a>
                 </div>
               </div>
-              <hr />
-              <div v-if="!showLoader" class="py-4">
-                  <audio v-if="!showLoader" controls class="w-full invisible">
-                    <source
-                      :src="voiceOverResult"
-                      type="audio/mp3"
-                    />
-                    Your browser does not support the audio element.
-                  </audio>
-                  <audio class="w-full" v-if="!showLoader" controls>
-                      <source :src=" voiceOverResult " type="audio/ogg">
-                      <source :src="voiceOverResult" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                  </audio>
-
-                </div>
+             </div>
             </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -334,7 +382,7 @@
           class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
         >
           <CheckboxRoot
-            v-model="checkboxOne"
+            v-model="checkboxTwo"
             class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none"
           >
             <CheckboxIndicator
@@ -360,7 +408,8 @@
         </label>
       </div>
       <div class="flex items-center justify-end py-2">
-        <button class="px-[40px] py-[6px] rounded-full bg-insta text-white" @click="start()">
+        <button
+          class="px-[40px] py-[6px] rounded-full bg-insta text-white" >
           Generate
         </button>
       </div>
@@ -392,31 +441,29 @@
               </div>
               <div class="space-y-6 text-[13px] text-[#868E9C]">
                 <p>
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from 45 BC, making it over 2000 years old. Richard McClintock,
-                  a Latin professor at Hampden-Sydney College in Virginia,
-                  looked up one of the more obscure Latin words, consectetur,
-                  from a Lorem Ipsum passage, and going through the cites of the
-                  word in classical literature, discovered the undoubtable
-                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
-                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
-                  Evil) by Cicero, written in 45 BC. This book is a treatise on
-                  the theory of ethics, very popular during the Renaissance. The
-                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                  comes from a line in section 1.10.32.
+                  Contrary to popular belief, Lorem Ipsum is not simply random text. It
+                  has roots in a piece of classical Latin literature from 45 BC, making it
+                  over 2000 years old. Richard McClintock, a Latin professor at
+                  Hampden-Sydney College in Virginia, looked up one of the more obscure
+                  Latin words, consectetur, from a Lorem Ipsum passage, and going through
+                  the cites of the word in classical literature, discovered the
+                  undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33
+                  of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by
+                  Cicero, written in 45 BC. This book is a treatise on the theory of
+                  ethics, very popular during the Renaissance. The first line of Lorem
+                  Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section
+                  1.10.32.
                 </p>
                 <p>
-                  The standard chunk of Lorem Ipsum used since the 1500s is
-                  reproduced below for those interested. Sections 1.10.32 and
-                  1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are
-                  also reproduced in their exact original form, accompanied by
-                  English versions from the 1914 translation by H. Rackham.
+                  The standard chunk of Lorem Ipsum used since the 1500s is reproduced
+                  below for those interested. Sections 1.10.32 and 1.10.33 from "de
+                  Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact
+                  original form, accompanied by English versions from the 1914 translation
+                  by H. Rackham.
                 </p>
                 <p>
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from.
+                  Contrary to popular belief, Lorem Ipsum is not simply random text. It
+                  has roots in a piece of classical Latin literature from.
                 </p>
               </div>
             </div>
@@ -450,14 +497,13 @@
               </div>
               <div class="space-y-6 pb-2 text-[13px] text-[#868E9C]">
                 <p>
-                  Our AI generates captivating, viewer-focused titles that
-                  effectively communicate your video's core message and entice
-                  clicks.
+                  Our AI generates captivating, viewer-focused titles that effectively
+                  communicate your video's core message and entice clicks.
                 </p>
                 <p>
-                  We provide comprehensive, SEO-optimized descriptions designed
-                  to enhance your video's discoverability and accurately
-                  summarize its content for potential viewers.
+                  We provide comprehensive, SEO-optimized descriptions designed to enhance
+                  your video's discoverability and accurately summarize its content for
+                  potential viewers.
                 </p>
               </div>
             </div>
@@ -619,65 +665,45 @@
               <div class="flex flex-wrap items-center justify-between py-4">
                 <div class="flex items-center gap-4">
                   <label
-                    class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
+                    v-for="(checkbox, index) in checkboxes"
+                    :key="index"
+                    class="flex flex-row gap-4 items-center hover:bg-neutral-100"
                   >
-                    <CheckboxRoot
-                      v-model="checkboxOne"
+                    <input
+                      type="checkbox"
+                      v-model="selectedCheckbox"
+                      :value="checkbox.value"
+                      class="hidden"
+                    />
+                    <div
                       class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none"
+                      :class="{
+                        'bg-youtube text-white': selectedCheckbox === checkbox.value,
+                      }"
                     >
-                      <CheckboxIndicator
-                        class="flex items-center justify-center w-full h-full text-white rounded bg-insta"
+                      <svg
+                        v-if="selectedCheckbox === checkbox.value"
+                        width="15"
+                        height="15"
+                        viewBox="0 0 15 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 15 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
-                            fill="currentColor"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                          ></path>
-                        </svg>
-                      </CheckboxIndicator>
-                    </CheckboxRoot>
-                    <span class="select-none font-[16px]">Male</span>
-                  </label>
-                  <label
-                    class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
-                  >
-                    <CheckboxRoot
-                      v-model="checkboxOne"
-                      class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none"
-                    >
-                      <CheckboxIndicator
-                        class="flex items-center justify-center w-full h-full text-white rounded bg-insta"
-                      >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 15 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
-                            fill="currentColor"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                          ></path>
-                        </svg>
-                      </CheckboxIndicator>
-                    </CheckboxRoot>
-                    <span class="select-none font-[16px]">Female</span>
+                        <path
+                          d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
+                          fill="currentColor"
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </div>
+                    <span class="select-none font-[16px]">{{ checkbox.label }}</span>
                   </label>
                 </div>
                 <div>
                   <button
-                    class="px-[40px] py-[6px] rounded-full bg-insta text-white" @click="start()"
+                    class="px-[40px] py-[6px] rounded-full bg-insta text-white"
+                    @click="start()"
                   >
                     Generate
                   </button>
@@ -735,7 +761,7 @@
             </CheckboxIndicator>
           </CheckboxRoot>
           <span class="select-none font-[16px]">Short</span>
-        </label>
+        </label>n
         <label
           class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100"
         >
@@ -766,7 +792,10 @@
         </label>
       </div>
       <div class="flex items-center justify-end py-2">
-        <button class="px-[40px] py-[6px] rounded-full bg-tiktok text-white" @click="start()">
+        <button
+          class="px-[40px] py-[6px] rounded-full bg-tiktok text-white"
+          @click="start()"
+        >
           Generate
         </button>
       </div>
@@ -798,31 +827,29 @@
               </div>
               <div class="space-y-6 text-[13px] text-[#868E9C]">
                 <p>
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from 45 BC, making it over 2000 years old. Richard McClintock,
-                  a Latin professor at Hampden-Sydney College in Virginia,
-                  looked up one of the more obscure Latin words, consectetur,
-                  from a Lorem Ipsum passage, and going through the cites of the
-                  word in classical literature, discovered the undoubtable
-                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
-                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
-                  Evil) by Cicero, written in 45 BC. This book is a treatise on
-                  the theory of ethics, very popular during the Renaissance. The
-                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                  comes from a line in section 1.10.32.
+                  Contrary to popular belief, Lorem Ipsum is not simply random text. It
+                  has roots in a piece of classical Latin literature from 45 BC, making it
+                  over 2000 years old. Richard McClintock, a Latin professor at
+                  Hampden-Sydney College in Virginia, looked up one of the more obscure
+                  Latin words, consectetur, from a Lorem Ipsum passage, and going through
+                  the cites of the word in classical literature, discovered the
+                  undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33
+                  of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by
+                  Cicero, written in 45 BC. This book is a treatise on the theory of
+                  ethics, very popular during the Renaissance. The first line of Lorem
+                  Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section
+                  1.10.32.
                 </p>
                 <p>
-                  The standard chunk of Lorem Ipsum used since the 1500s is
-                  reproduced below for those interested. Sections 1.10.32 and
-                  1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are
-                  also reproduced in their exact original form, accompanied by
-                  English versions from the 1914 translation by H. Rackham.
+                  The standard chunk of Lorem Ipsum used since the 1500s is reproduced
+                  below for those interested. Sections 1.10.32 and 1.10.33 from "de
+                  Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact
+                  original form, accompanied by English versions from the 1914 translation
+                  by H. Rackham.
                 </p>
                 <p>
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from.
+                  Contrary to popular belief, Lorem Ipsum is not simply random text. It
+                  has roots in a piece of classical Latin literature from.
                 </p>
               </div>
             </div>
@@ -856,14 +883,13 @@
               </div>
               <div class="space-y-6 pb-2 text-[13px] text-[#868E9C]">
                 <p>
-                  Our AI generates captivating, viewer-focused titles that
-                  effectively communicate your video's core message and entice
-                  clicks.
+                  Our AI generates captivating, viewer-focused titles that effectively
+                  communicate your video's core message and entice clicks.
                 </p>
                 <p>
-                  We provide comprehensive, SEO-optimized descriptions designed
-                  to enhance your video's discoverability and accurately
-                  summarize its content for potential viewers.
+                  We provide comprehensive, SEO-optimized descriptions designed to enhance
+                  your video's discoverability and accurately summarize its content for
+                  potential viewers.
                 </p>
               </div>
             </div>
@@ -1083,7 +1109,9 @@
                 </div>
                 <div>
                   <button
-                    class="px-[40px] py-[6px] rounded-full bg-tiktok text-white" @click="start()">
+                    class="px-[40px] py-[6px] rounded-full bg-tiktok text-white"
+                    @click="start()"
+                  >
                     Generate
                   </button>
                 </div>
@@ -1103,7 +1131,6 @@
         </div>
       </div>
     </div>
- 
   </MainLayout>
 </template>
 
@@ -1114,17 +1141,22 @@ import { CheckboxIndicator, CheckboxRoot } from "radix-vue";
 import { ref, onMounted, computed } from "vue";
 import { useTab } from "@/store/counter";
 import Loader from "@/components/Loader.vue";
-import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import { postRequest } from '../helper/api.js';
-import { getRequestApi } from '../helper/api.js';
-import clipboardCopy from 'clipboard-copy';
-import AudioPlayer from 'vue-audio'
-import GlobalAlert from '@/components/Alert.vue';
-import { ExclamationTriangleIcon } from '@heroicons/vue/20/solid'
+import {
+  Listbox,
+  ListboxButton,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/vue";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/vue/20/solid";
+import { postRequest } from "../helper/api.js";
+import { getRequestApi } from "../helper/api.js";
+import clipboardCopy from "clipboard-copy";
+import AudioPlayer from "vue-audio";
+import GlobalAlert from "@/components/Alert.vue";
+import { ExclamationTriangleIcon } from "@heroicons/vue/20/solid";
 
 const apiErrors = ref([]);
-
 
 export default {
   components: {
@@ -1162,9 +1194,14 @@ export default {
       apiErrors: [],
       textValueValidationMessage: "",
       showLoader: false,
+      checkboxes: [
+        { value: "long", label: "Long ( 600-750 words )" },
+        { value: "short", label: "Short ( 250 words )" },
+      ],
+      selectedCheckbox: null,
     };
   },
-  
+
   methods: {
     toggleAudio(play) {
       if (this.isAudioPlaying && !play) {
@@ -1180,7 +1217,7 @@ export default {
     },
 
     updateTextValue(value) {
-      this.textValue = value
+      this.textValue = value;
     },
     async fetchVoiceData() {
       try {
@@ -1222,73 +1259,65 @@ export default {
         this.showLoader = false;
         this.apiResponse = response;
         console.log(this.apiResponse);
-
       } catch (error) {
         console.error("Error:", error);
         this.apiErrors.push(error.response.data.message);
       }
       setTimeout(() => {
-            this.apiErrors = [];
-        }, 2000);
+        this.apiErrors = [];
+      }, 2000);
     },
-        //////////////////VOICE OVER/////////////////////////
-        playAudio() {
+    //////////////////VOICE OVER/////////////////////////
+    playAudio() {
       // Check if the audio source is not empty and autoplay
       if (this.voiceOverResult) {
         this.$refs.audioPlayer.play();
       }
     },
-      async voiceover() {
-        console.log(this.selected.id);
-        this.showLoader = true;
+    async voiceover() {
+      console.log(this.selected.id);
+      this.showLoader = true;
 
-        try {
-          const response = await postRequest("voiceover", {
-            text: this.apiResponse?.script,
-            voice_id: this.selected.id,
-          });
+      try {
+        const response = await postRequest("voiceover", {
+          text: this.apiResponse?.script,
+          voice_id: this.selected.id,
+        });
 
-          this.showLoader = false;
-          this.voiceOverResult = response.voiceover;
-          this.shouldRenderAudio = false; // Ensure the next render will recreate the audio element
-          this.$nextTick(() => {
-            this.shouldRenderAudio = true; // Allow the next render to create the audio element
-          });
+        this.showLoader = false;
+        this.voiceOverResult = response.voiceover;
+        this.shouldRenderAudio = false; // Ensure the next render will recreate the audio element
+        this.$nextTick(() => {
+          this.shouldRenderAudio = true; // Allow the next render to create the audio element
+        });
 
-          console.log(this.voiceOverResult);
-        } catch (error) {
-          this.showLoader = false;
-          console.error("Error:", error);
-          this.apiErrors.push(error.response.data.message);
-        }
-        setTimeout(() => {
-            this.apiErrors = [];
-        }, 2000);
+        console.log(this.voiceOverResult);
+      } catch (error) {
+        this.showLoader = false;
+        console.error("Error:", error);
+        this.apiErrors.push(error.response.data.message);
+      }
+      setTimeout(() => {
+        this.apiErrors = [];
+      }, 2000);
+    },
 
-      },
-
-
-        //////////////////////COPY TEXT////////////////////////
+    //////////////////////COPY TEXT////////////////////////
     copyText(textToCopy) {
       clipboardCopy(textToCopy)
-        .then(() => {
-        })
-        .catch((err) => {
-        });
+        .then(() => {})
+        .catch((err) => {});
     },
-        ///////////////////////VALIDATION////////////////////////
+    ///////////////////////VALIDATION////////////////////////
     hideValidationMessage() {
       this.textValueValidationMessage = "";
     },
-
   },
-  mounted(){
-    this.textValue = localStorage.getItem("topic"); 
+  mounted() {
+    this.textValue = localStorage.getItem("topic");
     this.fetchVoiceData();
   },
-  
 };
-
 </script>
 
 <style scoped>
