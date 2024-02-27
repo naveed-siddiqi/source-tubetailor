@@ -30,8 +30,11 @@
             <!-- Table body -->
             <tr v-for="(competitor, index) in competitors" :key="index"
               class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
-              <td class="px-4 text-[13px]">
-                {{ competitor.channel }}
+              <td class="px-4 text-[13px] ">
+                <div class="flex items-center justify-start gap-2">
+                  <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1708616748538-bdd66d6a9e25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8" alt="">
+               <span class="font-medium text-gray-700"> @ {{ competitor.channel }}</span>
+                </div>
               </td>
               <td class="px-4 text-[13px]">
                 {{ competitor.total_Uploads }}
@@ -68,14 +71,22 @@
 <script setup>
 import MainLayout from "@/layouts/MainLayout.vue";
 import TableLayout from "@/layouts/TableLayout.vue";
+import useToastHook from "../hooks/ToastMessage";
 import { ref, onMounted } from 'vue';
+const { showSuccessToast, showErrorToast } = useToastHook();
 const isSaveCompetitor = ref([]);
 const savedTopic = ref([]);
 const viewSavedTopic = () =>{
   savedTopic.value = !savedTopic.value;
 }
+const onSuccess = () => {
+  showSuccessToast("Copied");
+};
 const saveCompetitor = (index) => {
   isSaveCompetitor.value[index] = !isSaveCompetitor.value[index];
+  if(!isSaveCompetitor.value[index]){
+    showSuccessToast("Saved");
+  }
 }
 const competitors = [
   { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },

@@ -104,15 +104,27 @@
         <h2 class="relative text-xl font-bold">
           Similar Keywords:
         </h2>
-        <div class="">
-        <button v-if="!savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Saved Keywords</button>
-        <button v-if="savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">Explore Similar Keywords</button>
-      </div>
       </div>
         <div class="flex-1 w-full px-6 py-8 bg-white md:col-span-2 bg-shadow rounded-xl border">
+           <div class="flex items-center justify-end gap-5 mb-2">
+            <button @click="changeTabMarketing(1)" :class="[
+                    'px-3 py-2 text-xs border rounded-full',
+                    currentTabMarketing === 1 ? 'bg-youtube text-white' : '',
+                  ]">
+                  New keywords
+                  </button> 
+                   <button @click="changeTabMarketing(2)" :class="[
+                    'px-3 py-2 text-xs border  rounded-full',
+                    currentTabMarketing === 2
+                      ? 'bg-youtube text-white border-[#fe4442]'
+                      : '',
+                  ]">
+                  saved keywords
+                  </button>
+           </div>
           <div class="overflow-x-auto scrollbar">
             <div class="w-full min-w-max">
-              <table v-if="!savedTopic" class="table min-w-full border divide-gray-300 rounded-lg">
+              <table v-if="currentTabMarketing === 1" class="table min-w-full border divide-gray-300 rounded-lg">
                 <thead class="rounded bg-[#414D61] text-white">
                   <tr>
                     <th scope="col" class="rounded-l-lg px-3 py-3.5 text-left text-sm font-semibold">
@@ -168,7 +180,7 @@
                   </tr>
                 </tbody>
               </table>
-              <table v-if="savedTopic" class="table min-w-full border divide-gray-300 rounded-lg">
+              <table v-if="currentTabMarketing === 2" class="table min-w-full border divide-gray-300 rounded-lg">
                 <thead class="rounded bg-[#414D61] text-white">
                   <tr>
                     <th scope="col" class="rounded-l-lg px-3 py-3.5 text-left text-sm font-semibold">
@@ -212,7 +224,7 @@
                       }}</span>
                     </td>
                     <td class="px-4 py-2 text-right">
-                      <button @click="saveTopicIdeas(index)" class="text-left text-[10px] underline whitespace-nowrap font-medium focus:outline-none">
+                      <button @click="saveTopicIdeas(index)" class="text-left text-[10px] underline whitespace-nowrap font-medium focus:outline-none invisible">
                         <svg v-if="!isTopicSaved[index]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                         </svg>
@@ -471,6 +483,7 @@
 
         </div>
         <div class="flex-1 w-full px-6 py-8 bg-white md:w-auto bg-shadow rounded-xl md:col-span-2">
+          
           <div class="overflow-x-auto scrollbar">
             <div class="w-full min-w-max">
               <table class="table min-w-full border divide-gray-300 rounded-lg">
@@ -587,6 +600,7 @@ import {
 import { CheckboxIndicator, CheckboxRoot } from "radix-vue";
 import { getRequestApi } from '../helper/api.js';
 import { onMounted } from "vue";
+const currentTabMarketing = ref(1);
 const ytScore = ref(30);
 const instaScore = ref(50);
 const ttScore = ref(90);
@@ -595,8 +609,12 @@ const store = useTab();
 onMounted(() => {
   localStorage.removeItem('topic')
 });
+function changeTabMarketing(tab) {
+  currentTabMarketing.value = tab;
+}
 </script>
 <script>
+import useToastHook from "../hooks/ToastMessage";
 const apiErrors = ref([]);
 export default {
   data() {
@@ -616,6 +634,11 @@ export default {
       }
     };
   },
+  created() {
+    const { showSuccessToast, showErrorToast } = useToastHook();
+    this.showSuccessToast = showSuccessToast;
+    this.showErrorToast = showErrorToast;
+  },
   computed: {
     audienceDetail() {
       return this.DetailAnaylsis.audience_detail.split(',').map(item => item.trim());
@@ -633,6 +656,9 @@ export default {
     },
     saveTopicIdeas(index){
       this.isTopicSaved[index] = !this.isTopicSaved[index];
+      if (this.isTopicSaved[index]) {
+        this.showSuccessToast("Saved");
+      }
     },
     capitalizeFirstLetter(value) {
       return value.charAt(0).toUpperCase() + value.slice(1);

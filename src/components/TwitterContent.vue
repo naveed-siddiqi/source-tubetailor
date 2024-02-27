@@ -7,7 +7,7 @@ const bgStyle = {
 <template>
   <div class="py-4 overflow-x-auto scrollbar">
     <div class="w-full min-w-max">
-      <div v-if="apiResponse && apiResponse.length > 0" v-for="tweet in apiResponse" class="p-2 rounded-lg">
+      <!-- <div v-if="apiResponse && apiResponse.length > 0" v-for="tweet in apiResponse" class="p-2 rounded-lg"> -->
         <div class="space-y-3">
           <div 
             class="flex items-center justify-between gap-4 p-3 bg-white bg-shadow rounded-xl"
@@ -50,7 +50,7 @@ const bgStyle = {
             </div>
           </div>
         </div>
-      </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>

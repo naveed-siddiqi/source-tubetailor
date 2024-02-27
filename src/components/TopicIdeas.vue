@@ -9,8 +9,8 @@
           </span>
         </h2>
         <div class="">
-        <button v-if="savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Saved Topic Ideas</button>
-        <button v-if="!savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Topic Ideas</button>
+        <button v-if="savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">View Topic Ideas</button>
+        <button v-if="!savedTopic" @click="viewSavedTopic" class="text-sm font-medium text-end text-red-500">Saved Topic Ideas</button>
       </div>
       </div>
   <TableLayout>
@@ -143,6 +143,7 @@
 import TableLayout from "@/layouts/TableLayout.vue";
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import axios from 'axios';
+import useToastHook from "../hooks/ToastMessage";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
@@ -166,12 +167,20 @@ export default {
       return this.isTopicSaved.some(value => value);
     }
   },
+  created() {
+    const { showSuccessToast, showErrorToast } = useToastHook();
+    this.showSuccessToast = showSuccessToast;
+    this.showErrorToast = showErrorToast;
+  },
   methods: {
     viewSavedTopic(){
       this.savedTopic = !this.savedTopic;
     },
     saveTopicIdeas(index){
       this.isTopicSaved[index] = !this.isTopicSaved[index];
+      if (this.isTopicSaved[index]) {
+        this.showSuccessToast("Saved");
+      }
     },
     async fetchTopicIdeas() {
       try {
