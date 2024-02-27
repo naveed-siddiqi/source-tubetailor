@@ -277,15 +277,18 @@
 
             </div>
             <div>
+              <div class="relative">
+                  <h2 class="text-[20px] font-bold">Relevant subreddits:</h2>
+                </div>
               <TableLayout>
                 <div class="flex items-center gap-2">
-                  <button @click="changeTabMarketing(1)" :class="[
+                  <!-- <button @click="changeTabMarketing(1)" :class="[
                     'px-3 py-2 text-xs border rounded-full',
                     currentTabMarketing === 1 ? 'bg-youtube text-white' : '',
                   ]">
                     Reddit
-                  </button>
-                  <button @click="changeTabMarketing(2)" :class="[
+                  </button> -->
+                  <!-- <button @click="changeTabMarketing(2)" :class="[
                     'px-3 py-2 text-xs border  rounded-full',
                     currentTabMarketing === 2
                       ? 'bg-youtube text-white border-[#fe4442]'
@@ -300,17 +303,17 @@
                       : '',
                   ]">
                     Threads
-                  </button>
+                  </button> -->
                 </div>
                 <div v-if="currentTabMarketing === 1">
                   <RedditContent :apiResponse="apiResponse?.subreddits" />
                 </div>
-                <div v-if="currentTabMarketing === 2">
+                <!-- <div v-if="currentTabMarketing === 2">
                   <TwitterContent :apiResponse="apiResponse?.tweets" />
                 </div>
                 <div v-if="currentTabMarketing === 3">
                   <ThreadsContent :apiResponse="apiResponse?.threads" />
-                </div>
+                </div> -->
               </TableLayout>
             </div>
           </div>

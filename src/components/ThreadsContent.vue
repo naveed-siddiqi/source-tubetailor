@@ -7,11 +7,11 @@ const bgStyle = {
 <template>
   <div class="py-4 overflow-x-auto scrollbar">
     <div class="w-full min-w-max">
-      <div v-if="apiResponse && apiResponse.length > 0" class="p-4 border rounded-lg">
+      <!-- <div v-if="apiResponse && apiResponse.length > 0" class="p-4 border rounded-lg"> -->
         <div class="space-y-3">
-          <div v-for="post in apiResponse"
+          <!-- <div v-for="post in apiResponse"
             class="flex items-center justify-between gap-4 p-3 bg-white bg-shadow rounded-xl"
-          >
+            > -->
             <div class="flex items-center gap-4">
               <div class="rounded-lg bg-[#EFF4FD] p-2">
                 <svg
@@ -48,9 +48,9 @@ const bgStyle = {
                 </svg>
               </button>
             </div>
-          </div>
+          <!-- </div> -->
         </div>
-      </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>

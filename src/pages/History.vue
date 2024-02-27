@@ -84,15 +84,21 @@
   <script setup>
   import MainLayout from "@/layouts/MainLayout.vue";
   import TableLayout from "@/layouts/TableLayout.vue";
+  import useToastHook from "../hooks/ToastMessage";
   import { ref, onMounted } from 'vue';
+  const { showSuccessToast, showErrorToast } = useToastHook();
   const isSaveCompetitor = ref([]);
   const savedTopic = ref([]);
   const viewSavedTopic = () =>{
     savedTopic.value = !savedTopic.value;
   }
   const saveCompetitor = (index) => {
-    isSaveCompetitor.value[index] = !isSaveCompetitor.value[index];
+  isSaveCompetitor.value[index] = !isSaveCompetitor.value[index];
+  if(!isSaveCompetitor.value[index]){
+    showSuccessToast("Saved");
   }
+}
+  
   const historys = [
     { Category: 'Optimization', type: 'Script', description: '7 days. Save the competitors that you want to track.7 days. Save the competitors that you want to track', date: '05:56 PM | 25 / 12 / 2005', isAudio:false } ,
     { Category: 'Keyword Research', type: 'Keyword', description: 'admission , new', date: '05:56 PM | 25 / 12 / 2005',isAudio:false },
