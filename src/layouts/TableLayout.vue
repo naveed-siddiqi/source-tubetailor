@@ -1,5 +1,5 @@
 <template>
-  <div class="px-8 py-6 mt-4 bg-white styleCard rounded-xl border !border-gray-200">
+  <div class="px-4 sm:px-8 py-6 mt-4 bg-white styleCard rounded-xl border !border-gray-200">
     <span v-if="isData"><Pulse /></span>
     <span v-else> <slot /></span>
   </div>

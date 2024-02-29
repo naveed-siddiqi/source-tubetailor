@@ -16,7 +16,7 @@
               <th class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium">
                 Channel
               </th>
-              <th class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium">
+              <th class="py-2text-left whitespace-nowrap px-4 text-[13px] whitespace-nowrap font-medium">
                 Total uploads
               </th>
               <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
@@ -30,19 +30,19 @@
             <!-- Table body -->
             <tr v-for="(competitor, index) in competitors" :key="index"
               class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
-              <td class="px-4 text-[13px] ">
+              <td class="px-4 text-[13px] whitespace-nowrap ">
                 <div class="flex items-center justify-start gap-2">
                   <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1708616748538-bdd66d6a9e25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8" alt="">
                <span class="font-medium text-gray-700"> @ {{ competitor.channel }}</span>
                 </div>
               </td>
-              <td class="px-4 text-[13px]">
+              <td class="px-4 text-[13px] whitespace-nowrap">
                 {{ competitor.total_Uploads }}
               </td>
-              <td class="px-4 text-[13px]">
+              <td class="px-4 text-[13px] whitespace-nowrap">
                 {{ competitor.Total_views }}
               </td>
-              <td class="px-4 text-[13px]">
+              <td class="px-4 text-[13px] whitespace-nowrap">
                 {{ competitor.Subscriber }}
               </td>
               <td class="px-4 py-2 text-end">

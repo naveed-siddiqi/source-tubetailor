@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4">
     <h2 class="text-xl font-bold">
-              Analytics
+              Analytics:
     </h2>
   </div>
   <TableLayout>

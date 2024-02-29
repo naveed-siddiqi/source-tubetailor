@@ -107,4 +107,5 @@ body::-webkit-scrollbar {
 body {
 -ms-overflow-style: none;  /* IE and Edge */
 scrollbar-width: none;  /* Firefox */
+@apply bg-gradient-to-r from-[#d1bffa2e] ;
 }

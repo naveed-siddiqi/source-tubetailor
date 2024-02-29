@@ -16,7 +16,7 @@
                 <th class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium">
                   Category
                 </th>
-                <th class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium">
+                <th class="py-2text-left whitespace-nowrap px-4 text-[13px] whitespace-nowrap font-medium">
                   Type
                 </th>
                 <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
@@ -28,10 +28,10 @@
               <!-- Table body -->
               <tr v-for="(history, index) in historys" :key="index"
                 class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
-                <td class="px-4 text-[13px] text-gray-800 font-medium whitespace-nowrap">
+                <td class="px-4 text-[13px] whitespace-nowrap text-gray-800 font-medium whitespace-nowrap">
                     {{ history.Category }}
                 </td>
-                <td class="px-4 text-[13px] whitespace-nowrap">
+                <td class="px-4 text-[13px] whitespace-nowrap whitespace-nowrap">
                     <div class=" flex items-center justify-start gap-2">
                         <span class="font-medium text-gray-800">{{ history.type }} :</span> 
                         <span v-if="history.isAudio === false" class="max-w-sm truncate">{{ history.description }}</span>
@@ -42,10 +42,10 @@
                         </audio>
                     </div>
                 </td>
-                <td class="px-4 text-[13px] whitespace-nowrap">
+                <td class="px-4 text-[13px] whitespace-nowrap whitespace-nowrap">
                   {{ history.date }}
                 </td>
-                <td class="px-4 text-[13px] text-start whitespace-nowrap">
+                <td class="px-4 text-[13px] whitespace-nowrap text-start whitespace-nowrap">
                 <div class="flex items-center justify-start">
                     <button class="flex items-center justify-center text-center gap-2">
                     <span class="text-blue-600 font-medium text-md">

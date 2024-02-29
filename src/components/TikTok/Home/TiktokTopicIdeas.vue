@@ -26,7 +26,7 @@
                 Title
               </th>
               <th
-                class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium"
+                class="py-2text-left whitespace-nowrap px-4 text-[13px] whitespace-nowrap font-medium"
               >
                 Keyword
               </th>
@@ -53,10 +53,10 @@
             </tr>
             <!-- Table body -->
             <tr class="py-2 rounded-lg">
-              <td class="td px-4 text-[13px]">
+              <td class="td px-4 text-[13px] whitespace-nowrap">
                 Lorem Ipsum is simply dummy text of the printing.
               </td>
-              <td class="flex items-center justify-center gap-2 px-4 py-2 td">
+              <td class="flex items-center justify-center gap-2 px-4 py-2 whitespace-nowrap td">
                 <span
                   class="rounded-full bg-[#EFF4FD] px-3 py-1 text-xs font-semibold"
                   >Games</span
