@@ -25,7 +25,6 @@
           <button class="px-[40px] py-[6px] rounded-full bg-youtube text-white" @click="youtubeOptimization()">
             Start
           </button>
-          {{ showLoader.value }}
         </div>
         <div v-if="allresults.length !== 0" class="grid grid-cols-1 gap-4">
           <!-- Column 1 -->
@@ -39,7 +38,7 @@
                   <InformationCircleIcon class="absolute top-0 w-5 h-5 text-black left-[140px]" />
                 </div>
                 <div class="text-center flex items-center gap-x-3">
-                  <p class="text-[12px] font-semibold">Overall Score</p>
+                  <p class="text-[12px] font-semibold text-gray-800">Overall Score</p>
                   <span :apiResponse="apiResponse?.score_out_of_10"
                     class="px-3 py-1 lg:text-[16px] text-[14px] font-bold rounded-full bg-youtube text-white">{{
                       score.overall }}/10</span>
@@ -96,10 +95,10 @@
                 </button>
               </div>
             </div>
-            <div class="p-4 space-y-2 bg-white rounded-xl bg-shadow border">
+            <div class="px-8 py-4 space-y-2 bg-white rounded-xl bg-shadow border">
               <div v-if="currentTab === 1" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended titles</span>
 
                   <span class="cursor-pointer" v-clipboard="recommendedTitle1" v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -111,12 +110,12 @@
                 </label>
                 <div class="w-full">
                   <input disabled :value="recommendedTitle1"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white" />
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended titles</span>
 
                   <span class="cursor-pointer" v-clipboard="recommendedTitle2" v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -128,12 +127,12 @@
                 </label>
                 <div class="w-full">
                   <input disabled :value="recommendedTitle2"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white" />
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended titles</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended titles</span>
 
                   <span class="cursor-pointer" v-clipboard="recommendedTitle3" v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -145,13 +144,13 @@
                 </label>
                 <div class="w-full">
                   <input disabled :value="recommendedTitle3"
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none bg-white" />
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white" />
                 </div>
               </div>
 
               <div v-if="currentTab === 1" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended descriptions</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended descriptions</span>
                   <span class="cursor-pointer" v-clipboard="recommendedDescription1" v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="w-4 h-4">
@@ -160,15 +159,15 @@
                     </svg> </span></label>
                 <div class="w-full">
                   <textarea disabled :value="recommendedDescription1" type="text" name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-300 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
                     id="">
                   </textarea>
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended descriptions</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended descriptions</span>
                   <span class="cursor-pointer" v-clipboard="recommendedDescription2"  v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="w-4 h-4">
@@ -177,15 +176,15 @@
                     </svg> </span></label>
                 <div class="w-full">
                   <textarea disabled :value="recommendedDescription2" type="text" name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-300 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
                     id="">
                   </textarea>
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended descriptions</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended descriptions</span>
                   <span @click="onSuccess()" class="cursor-pointer" v-clipboard="recommendedDescription3"  v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="w-4 h-4">
@@ -194,15 +193,15 @@
                     </svg> </span></label>
                 <div class="w-full">
                   <textarea disabled :value="recommendedDescription3" type="text" name=""
-                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-400 rounded-md bg-white outline-none h-36"
+                    class="w-full py-2 pl-4 pr-6 my-2 border border-gray-300 rounded-md bg-white outline-none h-36"
                     placeholder="Our AI generates captivating, viewer-focused titles that effectively communicate your video's core message and entice clicks.  We provide comprehensive, SEO-optimized descriptions designed. "
                     id="">
                   </textarea>
                 </div>
               </div>
               <div class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Recommended tags</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Recommended tags</span>
 
                   <span @click="onSuccess()" class="cursor-pointer" v-clipboard="tags" v-clipboard:success="onSuccess">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -219,8 +218,8 @@
                 </div>
               </div>
               <div v-if="currentTab === 1" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Thumbnail ideas</span>
 
                   <span class="cursor-pointer" 
                   v-clipboard="recommendedIdea1"
@@ -234,13 +233,13 @@
                 </label>
                 <div class="w-full">
                   <input :value="recommendedIdea1" type="text" name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white"
                     placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
               <div v-if="currentTab === 2" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Thumbnail ideas</span>
 
                   <span class="cursor-pointer"
                   v-clipboard="recommendedIdea2"
@@ -252,13 +251,13 @@
                     </svg> </span></label>
                 <div class="w-full">
                   <input :value="recommendedIdea2" type="text" name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white"
                     placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
               <div v-if="currentTab === 3" class="py-2">
-                <label class="text-[16px] flex items-center justify-between font-semibold" for="title">
-                  <span class="font-semibold">Thumbnail ideas</span>
+                <label class="text-[16px] flex items-center justify-between font-semibold text-gray-800" for="title">
+                  <span class="font-semibold text-gray-800">Thumbnail ideas</span>
 
                   <span class="cursor-pointer" 
                   v-clipboard="recommendedIdea3"
@@ -270,7 +269,7 @@
                     </svg> </span></label>
                 <div class="w-full">
                   <input :value="recommendedIdea3" type="text" name=""
-                    class="w-full px-4 py-2 my-2 border border-gray-400 rounded-md outline-none"
+                    class="w-full px-4 py-2 my-2 border border-gray-300 rounded-md outline-none bg-white"
                     placeholder="Our AI generates captivating, viewer-focused titles" id="" />
                 </div>
               </div>
@@ -421,14 +420,12 @@ async function youtubeOptimization() {
     apiErrors.value.push(error.response?.data?.message || "An error occurred during YouTube optimization");
     completedRequests++; 
   }
-  console.log(apiResponse.value);
-  console.log(showLoader.value)
   try {
     const marketingResponse = await postRequest("youtube/marketing", {
       script: textValue.value,
     });
     apiResponse.value = marketingResponse;
-    showLoader.value = false;
+    // showLoader.value = false;
     completedRequests++; 
   } catch (error) {
     console.error("Error in YouTube marketing:", error);

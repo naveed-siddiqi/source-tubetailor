@@ -41,8 +41,9 @@
         <div class="py-6">
           <div class="">
             <div v-if="overview.channel_title" class="">
-              <dl class="grid grid-cols-1 lg:divide-x gap-1 rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-5">
-                <div v-if="overview.channel_title" class="flex items-center gap-3">
+              <dl
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:flex items-center justify-between 2xl:divide-x gap-6 lg:gap-2 rounded-2xl text-center">
+                <div v-if="overview.channel_title" class="flex items-center gap-3 sm:col-span-2 lg:col-span-4 2xl:flex-1">
                   <div class="!border-2 !border-youtubes rounded-full">
                     <img :src="overview.thumbnail" class="h-14 w-14 rounded-full" alt="" />
                   </div>
@@ -50,58 +51,59 @@
                     {{ overview.channel_title }}
                   </h1>
                 </div>
-                <div class="relative space-y-2">
-                  <button title="the lorem" class="absolute top-0 right-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                      stroke="currentColor" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z">
-                      </path>
-                    </svg>
-                  </button>
-                  <dt class="text-sm font-medium leading-6 text-black">
-                    Channel Worth
-                  </dt>
-                  <dt class="order-first text-2xl font-semibold tracking-tight text-[#FE4442]">
+                <div class="space-y-2 flex-1 text-center">
+                  <div class="w-full">
+                    <dt class="flex items-center justify-start sm:justify-center gap-2 text-sm font-medium leading-6 text-black text-left sm:text-center">
+                      Channel Worth
+                      <button title="the lorem" class=" text-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z">
+                          </path>
+                        </svg>
+                      </button>
+                    </dt>
+                  </div>
+                  <dt class="order-first text-2xl font-bold tracking-tight text-[#FE4442] text-left sm:text-center">
                     {{ overview?.channel_worth?.worth }}
                   </dt>
                 </div>
-                <div class="relative space-y-2">
+                <div class="relative space-y-2 flex-1">
                   <!--v-if-->
-                  <dt class="text-sm font-medium leading-6 text-black">
+                  <dt class="text-sm font-medium leading-6 text-black text-left sm:text-center">
                     Views
                   </dt>
-                  <dt class="order-first text-2xl font-semibold tracking-tight text-[#FE4442]">
+                  <dt class="order-first text-2xl font-bold tracking-tight text-[#FE4442] text-left sm:text-center">
                     {{ overview?.views }}
                   </dt>
 
                 </div>
-                <div class="relative space-y-2">
+                <div class="relative space-y-2 flex-1">
                   <!--v-if-->
-                  <dt class="text-sm font-medium leading-6 text-black">
+                  <dt class="text-sm font-medium leading-6 text-black text-left sm:text-center">
                     Subscribers
                   </dt>
-                  <dt class="order-first text-2xl font-semibold tracking-tight text-[#FE4442]">
+                  <dt class="order-first text-2xl font-bold tracking-tight text-[#FE4442] text-left sm:text-center">
                     {{ overview?.subscribers }}
                   </dt>
 
                 </div>
-                <div class="relative space-y-2">
-                  <button title="the lorem" class="absolute top-0 right-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                      stroke="currentColor" class="w-4 h-4">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z">
-                      </path>
-                    </svg>
-                  </button>
-                  <dt class="text-sm font-medium leading-6 text-black">
-                    Niche
-                  </dt>
-                  <dt class="order-first text-2xl font-semibold tracking-tight text-[#FE4442]">
+                <div class="relative space-y-2 flex-1">
+                  <dt class="flex items-center justify-start sm:justify-center  gap-2 text-sm font-medium leading-6 text-black text-left sm:text-center">
+                      Niche
+                      <button title="the lorem" class=" text-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z">
+                          </path>
+                        </svg>
+                      </button>
+                    </dt>
+                  <dt class="order-first text-2xl font-bold tracking-tight text-[#FE4442] text-left sm:text-center">
                     {{ overview?.niche }}
                   </dt>
-                  <dt class="text-xs leading-6 text-gray-600"></dt>
                 </div>
               </dl>
               <dl

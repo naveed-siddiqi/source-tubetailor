@@ -157,14 +157,14 @@
                             </svg>
                           </CheckboxIndicator>
                         </CheckboxRoot>
-                        <span class="select-none font-[16px]">{{ keywordData.keyword }}</span>
+                        <span class="select-none font-[16px] text-gray-800">{{ keywordData.keyword }}</span>
                       </label>
                     </td>
-                    <td class="px-3 py-4 text-sm whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-800">
                       {{ keywordData.monthly_search_volume }}
                     </td>
                     <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
-                      <span class="rounded-full text-white bg-[#FCC42D] px-3 py-1 text-[10px]"> {{ keywordData.difficulty
+                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordData.difficulty
                       }}</span>
                     </td>
                     <td class="px-4 py-2 text-right">
@@ -213,14 +213,14 @@
                             </svg>
                           </CheckboxIndicator>
                         </CheckboxRoot>
-                        <span class="select-none font-[16px]">{{ keywordData.keyword }}</span>
+                        <span class="select-none font-[16px] text-gray-800">{{ keywordData.keyword }}</span>
                       </label>
                     </td>
-                    <td class="px-3 py-4 text-sm whitespace-nowrap">
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-800">
                       {{ keywordData.monthly_search_volume }}
                     </td>
                     <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
-                      <span class="rounded-full text-white bg-[#FCC42D] px-3 py-1 text-[10px]"> {{ keywordData.difficulty
+                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordData.difficulty
                       }}</span>
                     </td>
                     <td class="px-4 py-2 text-right">

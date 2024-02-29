@@ -88,9 +88,9 @@
         <!-- First Column -->
         <div class="col-span-1">
           <!-- Content for the first column -->
-          <div class="space-y-2 overflow-y-auto">
+          <div class="space-y-2 overflow-y-auto pb-5 bg-white">
             <!-- Your content here -->
-            <div class="p-4 bg-white bg-shadow rounded-xl border h-[60vh]">
+            <div class="p-4 bg-white bg-shadow rounded-xl border h-[60vh] overflow-auto">
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Script:</h2>
                 <button @click="copyText(apiResponse?.script)" class="text-gray-600">
@@ -122,7 +122,7 @@
           <!-- Content for the first column -->
           <div class="space-y-2">
             <!-- Your content here -->
-            <div class="p-4 bg-white bg-shadow rounded-xl border h-[60vh]">
+            <div class="p-4 bg-white bg-shadow rounded-xl border h-[60vh] overflow-auto">
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Narrated Script:</h2>
                 <button @click="copyText(apiResponse?.script)" class="text-gray-600">
@@ -207,7 +207,7 @@
                 <span
                   v-for="tag in apiResponse.tags"
                   :key="tag"
-                  class="text-[#868E9C] bg-[#EFF4FD] px-3 py-1 font-semibold text-[10px] rounded-full flex"
+                  class="text-gray-800 bg-[#EFF4FD] px-5 py-1 font-semibold text-[10px] rounded-full flex"
                   >{{ tag }}</span
                 >
               </div>
