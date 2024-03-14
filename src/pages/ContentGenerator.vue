@@ -84,7 +84,7 @@
       </div>
      </div>
      </div>
-      <div v-if="apiResponse?.script" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <!-- First Column -->
         <div class="col-span-1">
           <!-- Content for the first column -->
@@ -110,8 +110,8 @@
                   </svg>
                 </button>
               </div>
-              <div  class="space-y-6 text-[13px] text-[#868E9C]">
-                <p>
+              <div  class="space-y-6 text-sm text-gray-500">
+                <p style="white-space: pre-line">
                 {{ apiResponse?.script }}
                 </p>
               </div>
@@ -142,8 +142,8 @@
                   </svg>
                 </button>
               </div>
-              <div  class="space-y-6 text-[13px] text-[#868E9C]">
-                <p>
+              <div  class="space-y-6 text-sm text-gray-500">
+                <p style="white-space: pre-line">
                 {{ apiResponse?.script }}
                 </p>
               </div>
@@ -179,13 +179,13 @@
                   </svg>
                 </button>
               </div>
-              <div class="space-y-6 text-[13px] text-[#868E9C]">
+              <div class="space-y-6 text-sm text-gray-500">
                 {{ apiResponse?.description }}
               </div>
             </div>
             <div class="mt-4">
               <div class="flex items-center justify-between py-2">
-                <h2 class="text-[16px] font-semibold">Hashtags:</h2>
+                <h2 class="text-[16px] font-semibold">Youtube Tags:</h2>
                 <button @click="copyText(apiResponse?.tags)" class="text-gray-600">
                   <svg
                     width="15"
@@ -204,12 +204,10 @@
                 </button>
               </div>
               <div class="flex flex-wrap items-center justify-start gap-2">
-                <span
-                  v-for="tag in apiResponse.tags"
-                  :key="tag"
-                  class="text-gray-800 bg-[#EFF4FD] px-5 py-1 font-semibold text-[10px] rounded-full flex"
-                  >{{ tag }}</span
-                >
+                <span v-if="apiResponse?.script" v-for="tag in apiResponse.tags" :key="tag"
+                  class="text-gray-800 bg-[#EFF4FD] px-5 py-1 font-semibold text-[10px] rounded-full flex">{{ tag }}</span>
+                  <span v-else v-for="person in people" :key="person.email"
+                    class="px-3 py-1 bg-[#EFF4FD] text-gray-500 rounded-full text-[12px] whitespace-nowrap flex">{{ person.data }}</span>
               </div>
              
             </div>
@@ -1172,6 +1170,8 @@ import { CheckboxIndicator, CheckboxRoot } from "radix-vue";
 import { ref, onMounted, computed } from "vue";
 import { useTab } from "@/store/counter";
 import Loader from "@/components/Loader.vue";
+import iconill from "@/components/icon.vue";
+
 import {
   Listbox,
   ListboxButton,
@@ -1186,9 +1186,12 @@ import clipboardCopy from "clipboard-copy";
 import AudioPlayer from "vue-audio";
 import GlobalAlert from "@/components/Alert.vue";
 import { ExclamationTriangleIcon } from "@heroicons/vue/20/solid";
-
+import useToastHook from "../hooks/ToastMessage";
+const { showSuccessToast, showErrorToast } = useToastHook();
 const apiErrors = ref([]);
-
+const onSuccess = () => {
+  showSuccessToast("Copied");
+};
 export default {
   components: {
     MainLayout,
@@ -1229,7 +1232,7 @@ export default {
         { value: "long", label: "Long ( 600-750 words )" },
         { value: "short", label: "Short ( 250 words )" },
       ],
-      selectedCheckbox: null,
+      selectedCheckbox: "long",
     };
   },
 
@@ -1335,6 +1338,7 @@ export default {
 
     //////////////////////COPY TEXT////////////////////////
     copyText(textToCopy) {
+      showSuccessToast("Copied");
       clipboardCopy(textToCopy)
         .then(() => {})
         .catch((err) => {});
@@ -1350,7 +1354,16 @@ export default {
   },
 };
 </script>
-
+<script setup>
+const people = [
+  { data : 'Youtube Tag' },
+  { data : 'Youtube Tag' },
+  { data : 'Youtube Tag' },
+  { data : 'Youtube Tag' },
+  { data : 'Youtube Tag' },
+  { data : 'Youtube Tag' },
+];
+</script>
 <style scoped>
 .bg-shadow {
   fill: #ffff;

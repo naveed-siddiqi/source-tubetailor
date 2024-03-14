@@ -30,9 +30,9 @@
             <!-- Table body -->
             <tr v-for="(competitor, index) in competitors" :key="index"
               class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
-              <td class="px-4 text-[13px] whitespace-nowrap ">
+              <td class="px-4 py-2.5 text-[13px] whitespace-nowrap ">
                 <div class="flex items-center justify-start gap-2">
-                  <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1708616748538-bdd66d6a9e25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8" alt="">
+                  <img class="w-12 h-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1708616748538-bdd66d6a9e25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8" alt="">
                <span class="font-medium text-gray-700"> @ {{ competitor.channel }}</span>
                 </div>
               </td>
