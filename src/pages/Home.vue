@@ -185,15 +185,18 @@ const isAccountAdded = ref(false);
 const showLoader = ref(false);
 async function youtubeConnect() {
   try {
+    showLoader.value = true;
     const { data } = await axios.get("youtube/auth", {
       headers: {
         "Returned-To": window.location.href,
       },
     });
+    showLoader.value = false;
     window.location.href = data.target_url;
   } catch (error) {
     // Handle any errors if needed
     console.error("Error occurred:", error);
+    showLoader.value = false;
   } finally {
     showLoader.value = false;
   }
@@ -218,7 +221,7 @@ async function youtubeOverview() {
     overview.value = JSON.parse(cachedData);
     return;
   }
-  showLoader.value = true;
+  showLoader.value = false;
   try {
     const { data } = await axios.get("youtube/overview");
     overview.value = data;

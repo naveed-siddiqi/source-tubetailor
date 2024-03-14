@@ -26,7 +26,7 @@
         </button>
       </div>
       <Loader :showLoader="showLoader" />
-      <div v-if="hasSimilarKeywords" class="items-start gap-4 md:flex-row grid grid-cols-1 md:grid-cols-2">
+      <div class="items-start gap-4 md:flex-row grid grid-cols-1 md:grid-cols-2">
         <div class="md:h-full">
           <div class="flex items-center">
             <h2 class="text-xl font-bold mb-2">
@@ -34,11 +34,11 @@
             </h2>
           </div>
           <div class="flex-1 w-full h-full px-6 py-8 space-y-2 bg-white md:w-auto bg-shadow rounded-xl border flex flex-col items-center justify-center">
-           <h2 class="font-bold text-xl sm:mb-6 text-center text-red-700">: {{ capitalizeFirstLetter(textValue) }}</h2>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-24">
+           <h2 class="font-bold text-2xl sm:mb-6 text-center text-red-700">{{ capitalizeFirstLetter(textValue) }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-24">
               <div class="">
                 <div class="text-center space-y-2 font-[#868E9C] text-[12px] relative">
-                 <div class="relative">
+                 <div class="flex items-center justify-center gap-2">
                   <p>Youtube Search Volume</p>
                   <InformationCircleIcon class="absolute -right-7 -top-1 w-6 h-6" />
                  </div>
@@ -51,11 +51,12 @@
               </div>
               <div>
                 <div class="text-center space-y-2 relative font-[#868E9C] text-[12px]">
-                  <div class="relative">
+                  <div class="flex items-center justify-center gap-2">
                     <p>Competition</p>
-                   <InformationCircleIcon class="absolute -right-7 -top-1 w-6 h-6" />
+                   <InformationCircleIcon class=" w-6 h-6" />
                   </div>
-                  <h2 class="text-[24px] font-bold">61.41</h2>
+                  <h2 v-if="DetailAnaylsis.monthly_search_volume" class="text-[24px] font-bold">61.41</h2>
+                  <h2 class="text-[24px] font-bold">0</h2>
                   <p class="bg-orange-400 rounded-full px-3 py-2 text-[12px] text-black font-medium">
                     Out of 100
                   </p>
@@ -72,12 +73,14 @@
             <div class="space-y-2 divide-y divide-gray-200 w-full">
               <div class="px-4 sm:grid grid-cols-1 sm:gap-4 sm:px-0">
                 <dt class="text-md font-semibold leading-4 text-gray-900">Audience Demographics</dt>
-                <dd v-if="DetailAnaylsis.audience_detail" class=" text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0 flex flex-col space-y-2">
+                <dd class=" text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0 flex flex-col space-y-2">
                   <dt class="font-medium text-gray-700">Audience Details :</dt>
-                  <p> {{ audienceDetail[0] }}</p>
+                  <p v-if="DetailAnaylsis.audience_detail"> {{ audienceDetail[0] }}</p>
+                  <p v-else>N/A</p>
                   <dt class="font-medium text-gray-700">Top 3 countries :</dt>
-                  <p> {{ audienceDetail[1] }}</p>
-                  <p>{{ audienceDetail[2] }}</p>
+                  <p v-if="DetailAnaylsis.audience_detail"> {{ audienceDetail[1] }}</p>
+                  <p v-if="DetailAnaylsis.audience_detail">{{ audienceDetail[2] }}</p>
+                  <p v-else>N/A</p>
                 </dd>
               </div>
               <div class="px-4 py-2 sm:grid sm:grid-cols-3 items-center sm:gap-4 sm:px-0">
@@ -142,7 +145,7 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white">
-                  <tr v-for="(keywordData, index) in similar_keywords" :key="index" class="even:bg-[#EFF4FD]">
+                  <tr v-if="keywordData" v-for="(keywordData, index) in similar_keywords" :key="index" class="even:bg-[#EFF4FD]">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium whitespace-nowrap sm:pl-3">
                       <label class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100">
                         <CheckboxRoot v-model="checkboxOne"
@@ -169,6 +172,42 @@
                     </td>
                     <td class="px-4 py-2 text-right">
                       <button @click="saveTopicIdeas(index)" class="text-left text-[10px] underline whitespace-nowrap font-medium focus:outline-none">
+                        <svg v-if="!isTopicSaved[index]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                        </svg>
+                        <svg v-else="isTopicSaved[index]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-[#FE4442]">
+                          <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" />
+                        </svg>
+                     </button> 
+                    </td>
+                  </tr>
+                  <tr v-else v-for="(keywordDataDefault, indexDefault) in keywordDataDefaults" :key="indexDefault" class="even:bg-[#EFF4FD]">
+                    <td class="py-4 pl-4 pr-3 text-sm font-medium whitespace-nowrap sm:pl-3">
+                      <label class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100">
+                        <CheckboxRoot v-model="checkboxOne"
+                          class="flex h-[16px] border w-[16px] items-center justify-center rounded bg-white outline-none">
+                          <CheckboxIndicator
+                            class="flex items-center justify-center w-full h-full text-white rounded bg-insta">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                              xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
+                                fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                            </svg>
+                          </CheckboxIndicator>
+                        </CheckboxRoot>
+                        <span class="select-none font-[16px] text-gray-800">{{ keywordDataDefault.keyword }}</span>
+                      </label>
+                    </td>
+                    <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-800">
+                      {{ keywordDataDefault.monthly_search_volume }}
+                    </td>
+                    <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
+                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordDataDefault.difficulty
+                      }}</span>
+                    </td>
+                    <td class="px-4 py-2 text-right">
+                      <button @click="saveTopicIdeas(index)" class="text-left text-[10px] underline whitespace-nowrap font-medium focus:outline-none invisible">
                         <svg v-if="!isTopicSaved[index]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                         </svg>
@@ -690,7 +729,13 @@ export default {
     }
   }
 };
-
+const keywordDataDefaults = [
+  {keyword : 'Keyword',monthly_search_volume : 'N/A',difficulty : 'N/A'},
+  {keyword : 'Keyword',monthly_search_volume : 'N/A',difficulty : 'N/A'},
+  {keyword : 'Keyword',monthly_search_volume : 'N/A',difficulty : 'N/A'},
+  {keyword : 'Keyword',monthly_search_volume : 'N/A',difficulty : 'N/A'},
+  {keyword : 'Keyword',monthly_search_volume : 'N/A',difficulty : 'N/A'},
+];
 </script>
 
 <style scoped>
