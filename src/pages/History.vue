@@ -2,11 +2,11 @@
   <MainLayout>
 
     <TableLayout class="!mt-0">
-      <div class="flex flex-col md:flex-row gap-4 items-center justify-between pb-2 ml-auto">
-      <div class="flex-1 xl:max-w-[50%]">
+      <div class="flex items-stretch flex-col xl:flex-row gap-3  pb-2 ml-auto">
+      <div class="flex-1 self-start">
         <fieldset>
           <legend class="sr-only">Notifications</legend>
-          <div class="flex flex-col sm:flex-row flex-wrap sm:items-center sm:justify-between gap-3">
+          <div class="flex flex-col sm:flex-row flex-wrap sm:items-center sm:justify-start gap-4 2xl:gap-10">
             <div class="relative flex items-start">
               <div class="flex h-6 items-center">
                 <input id="comments" aria-describedby="comments-description" name="comments" type="checkbox"
@@ -56,7 +56,7 @@
           </div>
         </fieldset>
       </div>
-      <div class="max-w-[200px] w-full">
+      <div class="max-w-[200px] w-full self-end">
         <div
           class="slider flex items-center justify-between bg-white w-full rounded-md border-0 py-1.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-red-500 sm:text-sm sm:leading-6 text-center">
           <button @click="scrollLeft">

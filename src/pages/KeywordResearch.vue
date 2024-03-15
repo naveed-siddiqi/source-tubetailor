@@ -56,7 +56,7 @@
                    <InformationCircleIcon class=" w-6 h-6" />
                   </div>
                   <h2 v-if="DetailAnaylsis.monthly_search_volume" class="text-[24px] font-bold">61.41</h2>
-                  <h2 class="text-[24px] font-bold">0</h2>
+                  <h2 v-else class="text-[24px] font-bold">0</h2>
                   <p class="bg-orange-400 rounded-full px-3 py-2 text-[12px] text-black font-medium">
                     Out of 100
                   </p>

@@ -110,7 +110,7 @@
                   </svg>
                 </button>
               </div>
-              <div  class="space-y-6 text-sm text-gray-500">
+              <div  class="space-y-6 text-base text-gray-900">
                 <p style="white-space: pre-line">
                 {{ apiResponse?.script }}
                 </p>
@@ -142,7 +142,7 @@
                   </svg>
                 </button>
               </div>
-              <div  class="space-y-6 text-sm text-gray-500">
+              <div  class="space-y-6 text-base text-gray-900">
                 <p style="white-space: pre-line">
                 {{ apiResponse?.script }}
                 </p>
@@ -179,7 +179,7 @@
                   </svg>
                 </button>
               </div>
-              <div class="space-y-6 text-sm text-gray-500">
+              <div class="space-y-6 text-base text-gray-900">
                 {{ apiResponse?.description }}
               </div>
             </div>
@@ -205,7 +205,7 @@
               </div>
               <div class="flex flex-wrap items-center justify-start gap-2">
                 <span v-if="apiResponse?.script" v-for="tag in apiResponse.tags" :key="tag"
-                  class="text-gray-800 bg-[#EFF4FD] px-5 py-1 font-semibold text-[10px] rounded-full flex">{{ tag }}</span>
+                  class="text-gray-800 bg-[#EFF4FD] px-5 py-1 font-semibold text-[12px] rounded-full flex">{{ tag }}</span>
                   <span v-else v-for="person in people" :key="person.email"
                     class="px-3 py-1 bg-[#EFF4FD] text-gray-500 rounded-full text-[12px] whitespace-nowrap flex">{{ person.data }}</span>
               </div>
