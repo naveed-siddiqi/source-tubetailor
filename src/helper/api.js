@@ -1,22 +1,48 @@
 import axios from 'axios';
-
+import useToastHook from "../hooks/ToastMessage";
+const { showSuccessToast, showErrorToast } = useToastHook();
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'https://backend.tubetailor.ai/api/';
-// axios.defaults.headers.common['Authorization'] = `Bearer 22|5TlSLTbUUXjTgVVnGz1jjVrwk3qa9p4KdSroxVYA37e4c6af`;
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
 export async function getRequestApi(url, parameter) {
-  // alert(localStorage.getItem('token'))
-    try {
-      const response = await axios.get(url, { params: parameter });
-      return response.data;
-    } catch (error) {
-      console.error("Error in API request:", error);
-      throw error;
-    }
-  }
+  const token = localStorage.getItem('token');
   
-export async function postRequest(url, parameter) {
-    const response = await axios.post(url, parameter);
+  if (!token) {
+    throw new Error('User is not logged in. Unable to fetch data.');
+  }
+
+  try {
+    const response = await axios.get(url, {
+      params: parameter,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data;
+  } catch (error) {
+    console.error("Error in API request:", error);
+    showErrorToast(error.message); // Show error message in toast
+    throw error; // Re-throw the error to propagate it further if needed
+  }
+}
+
+export async function postRequest(url, parameter) {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('User is not logged in. Unable to fetch data.');
+  }
+
+  try {
+    const response = await axios.post(url, parameter, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in API request:", error);
+    showErrorToast(error.message); // Show error message in toast
+    throw error; // Re-throw the error to propagate it further if needed
+  }
 }

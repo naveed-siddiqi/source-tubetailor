@@ -28,83 +28,116 @@ const router = createRouter({
       path: "/dashboard",
       name: "home",
       component: Home,
+      meta: { requiresAuth: true }
     },
     {
       path: "/Competitors",
       name: "Competitors",
       component: Marketing,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/content-generator",
       name: "contentgenerator",
       component: ContentGenerator,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/community-tools",
       name: "communitytools",
       component: CommunityTools,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/competition",
       name: "competition",
       component: Competition,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/pricing-plans",
       name: "pricingplans",
       component: PricingPlans,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/keyword-research",
       name: "keywordresearch",
       component: KeywordResearch,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/optimization",
       name: "optimization",
       component: Optimzation,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/history",
       name: "history",
       component: History,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/account-Settings",
       name: "accountsettings",
       component: AccountSettings,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/Progress",
       name: "pro",
       component: Progress,
+      meta: { requiresAuth: true }
+
     },
     {
       path: "/Admindashboard",
       name: "AdminDashboard",
       component: AdminDashboard,
+      meta: { requiresAuth: true }
     },
     {
       path: "/Adminsettings",
       name: "AdminSettings",
       component: AdminSettings,
+      meta: { requiresAuth: true }
     },
     {
       path: "/Admintransaction",
       name: "AdminTransaction",
       component: AdminTransaction,
+      meta: { requiresAuth: true }
     },
     {
       path: "/Adminusers",
       name: "AdminUsers",
       component: AdminUsers,
+      meta: { requiresAuth: true }
     },
     {
       path: "/Adminmail",
       name: "AdminMail",
       component: AdminMail,
+      meta: { requiresAuth: true }
     },
   ],
 });
-
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('token');
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/');
+  } else {
+    next();
+  }
+});
 export default router;

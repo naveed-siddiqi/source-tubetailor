@@ -66,10 +66,12 @@
      <div class="flex items-center justify-between">
       <div class="max-w-xs w-full ml-2">
         <div>
-          <select id="location" name="location" class="bg-white block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-red-500 sm:text-sm sm:leading-6">
-            <option selected>English</option>
-            <option>German</option>
-            <option>Urdu</option>
+          <select v-model="selectedLanguage" class="bg-white block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-red-500 sm:text-sm sm:leading-6">
+            <option value="english">english</option>
+            <option value="spanish">spanish</option>
+            <option value="french">french</option>
+            <option value="german">german</option>
+            <option value="portuguese">portuguese</option>
           </select>
         </div>
       </div>
@@ -125,7 +127,7 @@
             <div class="p-4 bg-white bg-shadow rounded-xl border h-[60vh] overflow-auto">
               <div class="flex items-center justify-between py-2">
                 <h2 class="text-[16px] font-semibold">Narrated Script:</h2>
-                <button @click="copyText(apiResponse?.script)" class="text-gray-600">
+                <button @click="copyText(apiResponse?.narration_script)" class="text-gray-600">
                   <svg
                     width="15"
                     height="15"
@@ -137,14 +139,13 @@
                       d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z"
                       fill="currentColor"
                       fill-rule="evenodd"
-                      clip-rule="evenodd"
-                    ></path>
+                      clip-rule="evenodd"></path>
                   </svg>
                 </button>
               </div>
               <div  class="space-y-6 text-base text-gray-900">
                 <p style="white-space: pre-line">
-                {{ apiResponse?.script }}
+                {{ apiResponse?.narration_script }}
                 </p>
               </div>
             </div>
@@ -240,8 +241,7 @@
                       <span
                         v-if="selected?.child"
                         class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10"
-                        >Child</span
-                      >
+                        >Child</span  >
                     </span>
                     <span
                       class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
@@ -261,22 +261,21 @@
                     <ListboxOptions
                       class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                     >
-                      <ListboxOption
+                    <div>
+                      <div class="bg-red-800"></div>
+                      <div class="">
+                        <ListboxOption
                         as="template"
                         v-for="voice in peopleVoiceOver"
                         :key="voice.id"
                         :value="voice"
-                        v-slot="{ active, selected }"
-                      >
+                        v-slot="{ active, selected }">
                         <li
                           @mouseover="toggleAudio(true)"
                           @mouseleave="toggleAudio(false)"
                           @click="selectVoice(voice)"
                           :class="[
-                            active ? 'bg-gray-400 text-white' : 'text-gray-900',
-                            'relative cursor-pointer select-none py-2 pl-3 pr-9 border-b group',
-                          ]"
-                        >
+                            active ? 'bg-gray-400 text-white' : 'text-gray-900','relative cursor-pointer select-none py-2 pl-3 pr-9 border-b group',]">
                           <span
                             v-if="selected"
                             :class="[
@@ -286,16 +285,14 @@
                           >
                             <CheckIcon class="h-5 w-5" aria-hidden="true" />
                           </span>
-                          <div class="flex items-center justify-between ml-3">
-                            <div class="flex gap-4">
-                              <div class="flex">
+                          <div class="flex items-center justify-between ml-4">
+                            <div class="flex gap-4 w-full">
+                              <div class="flex w-1/4">
                                 <span
                                   :class="[
                                     selected ? 'font-semibold' : 'font-normal',
                                     'truncate',
-                                  ]"
-                                  >{{ voice?.id }}</span
-                                >
+                                  ]">{{ voice?.id }}</span>
                                 <span
                                   :class="[
                                     active ? 'text-gray-900' : 'text-gray-500',
@@ -307,8 +304,9 @@
                               <span
                                 v-if="voice?.child"
                                 class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-600 ring-1 ring-inset ring-red-500/10"
-                                >Child</span
-                              >
+                                >Child</span>
+                                <span class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-600 ring-1 ring-inset ring-blue-500/10">{{capitalizeFirstLetter (voice.language) }}</span>
+
                             </div>
                             <audio
                               ref="audio"
@@ -320,6 +318,9 @@
                           </div>
                         </li>
                       </ListboxOption>
+                      </div>
+                    </div>
+                     
                     </ListboxOptions>
                   </transition>
                 </div>
@@ -336,6 +337,8 @@
                 </div>
               </div>
               </div>
+
+
               <div v-if="!showLoader" class="">
                 <audio v-if="!showLoader" controls class="w-full invisible h-0">
                   <source :src="voiceOverResult" type="audio/mp3" />
@@ -1187,7 +1190,7 @@ import AudioPlayer from "vue-audio";
 import GlobalAlert from "@/components/Alert.vue";
 import { ExclamationTriangleIcon } from "@heroicons/vue/20/solid";
 import useToastHook from "../hooks/ToastMessage";
-const { showSuccessToast, showErrorToast } = useToastHook();
+
 const apiErrors = ref([]);
 const onSuccess = () => {
   showSuccessToast("Copied");
@@ -1210,6 +1213,7 @@ export default {
   },
   data() {
     return {
+      selectedLanguage:'spanish',
       checkboxOne: true,
       store: useTab(),
       peopleVoiceOver: [],
@@ -1221,6 +1225,7 @@ export default {
       selectedVoice: null,
       apiResponse: {
         script: "",
+        narration_script: "",
         description: "",
         tags: [],
       },
@@ -1235,8 +1240,27 @@ export default {
       selectedCheckbox: "long",
     };
   },
-
+  created() {
+    const { showSuccessToast, showErrorToast } = useToastHook();
+    this.showSuccessToast = showSuccessToast;
+    this.showErrorToast = showErrorToast;
+  },
+  computed: {
+    groupedVoices() {
+      const grouped = {};
+      this.peopleVoiceOver.forEach(voice => {
+        if (!grouped[voice.language]) {
+          grouped[voice.language] = [];
+        }
+        grouped[voice.language].push(voice);
+      });
+      return grouped;
+    },
+  },
   methods: {
+    capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    },
     toggleAudio(play) {
       if (this.isAudioPlaying && !play) {
         this.$refs.audio.pause();
@@ -1259,7 +1283,7 @@ export default {
         let storedTimestamp = localStorage.getItem("voiceDataTimestamp");
 
         if (!storedData || !storedTimestamp) {
-          const response = await getRequestApi("voiceover/demo");
+          const response = await getRequestApi("voiceover/demo", {language: 'spanish'});
           this.peopleVoiceOver = response.voices;
           this.selected = this.peopleVoiceOver[0];
 
@@ -1270,8 +1294,8 @@ export default {
           this.selected = this.peopleVoiceOver[0];
         }
       } catch (error) {
-        console.error("Error fetching voice data:", error);
-        apiErrors.value.push(error.response.data.message);
+        this.showErrorToast(error);
+        this.showLoader = false;
       }
     },
 
@@ -1288,14 +1312,14 @@ export default {
       this.showLoader = true;
       try {
         const response = await postRequest("youtube/content-generator", {
-          title: this.textValue,
+          title: this.textValue, language: this.selectedLanguage,
         });
         this.showLoader = false;
         this.apiResponse = response;
         console.log(this.apiResponse);
       } catch (error) {
-        console.error("Error:", error);
-        this.apiErrors.push(error.response.data.message);
+        this.showLoader = false;
+        this.showErrorToast(error);
       }
       setTimeout(() => {
         this.apiErrors = [];
@@ -1328,8 +1352,7 @@ export default {
         console.log(this.voiceOverResult);
       } catch (error) {
         this.showLoader = false;
-        console.error("Error:", error);
-        this.apiErrors.push(error.response.data.message);
+        this.showErrorToast(error);
       }
       setTimeout(() => {
         this.apiErrors = [];

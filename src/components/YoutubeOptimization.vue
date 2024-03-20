@@ -431,9 +431,9 @@ async function youtubeOptimization() {
     recommendedDescription1.value = result1.value.description
     recommendedDescription2.value = result2.value.description
     recommendedDescription3.value = result3.value.description
-    recommendedIdea1.value = result1.value.description
-    recommendedIdea2.value = result2.value.description
-    recommendedIdea3.value = result3.value.description
+    recommendedIdea1.value = result1.value.thumbnail_idea
+    recommendedIdea2.value = result2.value.thumbnail_idea
+    recommendedIdea3.value = result3.value.thumbnail_idea
     // showLoader.value = false;
 
     // return;
@@ -446,7 +446,6 @@ async function youtubeOptimization() {
   } catch (error) {
     console.error("Error in YouTube optimization:", error);
     showErrorToast(error.response?.data?.message || "An error occurred during YouTube optimization");
-    apiErrors.value.push(error.response?.data?.message || "An error occurred during YouTube optimization");
     completedRequests++;
   }
   try {
@@ -459,7 +458,6 @@ async function youtubeOptimization() {
   } catch (error) {
     console.error("Error in YouTube marketing:", error);
     showErrorToast(error.response?.data?.message || "An error occurred during YouTube marketing");
-    apiErrors.value.push(error.response?.data?.message || "An error occurred during YouTube marketing");
     completedRequests++;
   }
 

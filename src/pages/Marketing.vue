@@ -16,13 +16,13 @@
               <th class="rounded-l-lg rounded-tl-lg whitespace-nowrap px-4 py-2 text-left text-[13px] font-medium">
                 Channel
               </th>
-              <th class="py-2text-left whitespace-nowrap px-4 text-[13px] whitespace-nowrap font-medium">
+              <th class="py-2text-left whitespace-nowrap px-4 text-[13px] font-medium text-center">
                 Total uploads
               </th>
-              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
+              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium text-center">
                 Total views
               </th>
-              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium">
+              <th class="px-4 py-2 whitespace-nowrap text-[13px] font-medium text-center">
                 Subscribers
               </th>
               <th class="rounded-r-lg px-4 py-2 whitespace-nowrap text-left text-[13px] font-medium"></th>
@@ -31,19 +31,19 @@
             <tr v-for="(competitor, index) in competitors" :key="index"
               class="py-2 rounded-lg border-b border-gray-400 text-gray-500">
               <td class="px-4 py-2.5 text-[13px] whitespace-nowrap ">
-                <div class="flex items-center justify-start gap-2">
-                  <img class="w-12 h-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1708616748538-bdd66d6a9e25?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHx8" alt="">
-               <span class="font-medium text-gray-700"> @ {{ competitor.channel }}</span>
+                <div class="flex items-center justify-start gap-4">
+                  <img class="w-16 h-16 rounded-full object-cover" :src="competitor.thumbnails.high.url" alt="">
+               <span class="text-[13px] whitespace-nowrap text-gray-800 font-medium text-center"> {{ competitor.username }}</span>
                 </div>
               </td>
-              <td class="px-4 text-[13px] whitespace-nowrap">
-                {{ competitor.total_Uploads }}
+              <td class="px-4 text-[13px] whitespace-nowrap text-gray-800 font-medium text-center">
+                {{ competitor.uploads }}
               </td>
-              <td class="px-4 text-[13px] whitespace-nowrap">
-                {{ competitor.Total_views }}
+              <td class="px-4 text-[13px] whitespace-nowrap text-gray-800 font-medium text-center">
+                {{ competitor.views }}
               </td>
-              <td class="px-4 text-[13px] whitespace-nowrap">
-                {{ competitor.Subscriber }}
+              <td class="px-4 text-[13px] whitespace-nowrap text-gray-800 font-medium text-center">
+                {{ competitor.subscribers }}
               </td>
               <td class="px-4 py-2 text-end">
                 <button @click="saveCompetitor(index)"
@@ -73,27 +73,57 @@ import MainLayout from "@/layouts/MainLayout.vue";
 import TableLayout from "@/layouts/TableLayout.vue";
 import useToastHook from "../hooks/ToastMessage";
 import { ref, onMounted } from 'vue';
+import { getRequestApi } from '../helper/api.js';
+
 const { showSuccessToast, showErrorToast } = useToastHook();
+const competitors = ref([]);
 const isSaveCompetitor = ref([]);
 const savedTopic = ref([]);
-const viewSavedTopic = () =>{
+const viewSavedTopic = () => {
   savedTopic.value = !savedTopic.value;
-}
+};
+
 const onSuccess = () => {
   showSuccessToast("Copied");
 };
+
 const saveCompetitor = (index) => {
   isSaveCompetitor.value[index] = !isSaveCompetitor.value[index];
-  if(!isSaveCompetitor.value[index]){
+  if (!isSaveCompetitor.value[index]) {
     showSuccessToast("Saved");
   }
+};
+
+async function Competitors() {
+  try {
+    let competitorsResponse;
+    const storedData = localStorage.getItem('competitorsData');
+    const storedTime = localStorage.getItem('competitorsDataTime');
+    const currentTime = Date.now();
+
+    if (storedData && storedTime && currentTime - parseInt(storedTime) < 24 * 60 * 60 * 1000) {
+      // Use cached data if within 24 hours
+      competitors.value = JSON.parse(storedData);
+    } else {
+      // Fetch fresh data from API
+      competitorsResponse = await getRequestApi("/youtube/competitors");
+      competitors.value = competitorsResponse.competitors;
+
+      // Save fresh data and current time in local storage
+      localStorage.setItem('competitorsData', JSON.stringify(competitors.value));
+      localStorage.setItem('competitorsDataTime', currentTime.toString());
+    }
+
+    console.log(competitors.value);
+  } catch (error) {
+    showErrorToast(error);
+  }
 }
-const competitors = [
-  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
-  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
-  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
-  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
-  { channel: 'Lindsay Walton', total_Uploads: '18', Total_views: '2500', Subscriber: '61' },
-  // More people...
-]
+
+onMounted(() => {
+  Competitors();
+});
+setInterval(() => {
+  Competitors();
+}, 24 * 60 * 60 * 1000);
 </script>

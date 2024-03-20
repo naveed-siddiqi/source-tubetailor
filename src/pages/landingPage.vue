@@ -1,7 +1,7 @@
 <template>
   <div class="" id="main_content">
     <header class="site-header header-two header_trans-fixed" data-top="992">
-      <div class="container max-w-7xl">
+      <div class="max-w-7xl mx-auto px-4">
         <div class="header-inner">
           <div class="site-mobile-logo">
             <a href="index.html" class="logo">
@@ -41,10 +41,10 @@
                 </li>
                 <li><a href="contact.html">Contact us</a></li>
               </ul>
-              <div class="nav-right">
-                <a href="javascript:;" class="nav-btn" @click="login">Sign In</a>
+              <div class="nav-right flex items-center gap-4">
+                <a v-if="!isAuthenticated" href="javascript:;" class="nav-btn" @click="login">Sign In</a>
                 <a href="javascript:;" class="nav-btn" @click="profile">Profile</a>
-                <a href="javascript:;" class="nav-btn" @click="logout">Logout</a>
+                <a v-if="isAuthenticated" href="javascript:;" class="nav-btn" @click="logout">Logout</a>
               </div>
             </div>
           </nav>
@@ -1169,6 +1169,9 @@ import bottom from "@/assets/bottom.png";
 import readyLeft from "@/assets/ready-left.png";
 import readyRight from "@/assets/ready-right.png";
 import top from "@/assets/top.png";
+import { postRequest } from "../helper/api.js";
+import useToastHook from "../hooks/ToastMessage";
+const { showSuccessToast, showErrorToast } = useToastHook();
 import { ref } from "vue";
 const isPlaying = ref(false);
 const togglePlay = () => {
@@ -1181,7 +1184,7 @@ const togglePlay = () => {
   }
   isPlaying.value = !isPlaying.value;
 };
-
+const isAuthenticated = localStorage.getItem('token');
 const api_baseURL = 'https://backend.tubetailor.ai/api/';
 import axios from 'axios';
 axios.defaults.withCredentials = true;
@@ -1204,8 +1207,19 @@ async function profile() {
   user.value = data;
 }
 async function logout() {
-  await axios.post('logout');
+  try {
+    const marketingResponse = await postRequest("logout");
+      localStorage.removeItem("token");
+      localStorage.removeItem("loglevel");
+      window.location.href = "/";
+  } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+    console.error("Error in YouTube marketing:", error);
+    showErrorToast(error.response?.data?.message || "An error occurred during YouTube marketing");
+  }
 }
+
 </script>
 
 <style scoped>
