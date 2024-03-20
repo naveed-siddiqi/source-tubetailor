@@ -75,11 +75,13 @@
                 <dt class="text-md font-semibold leading-4 text-gray-900">Audience Demographics</dt>
                 <dd class=" text-sm leading-6 text-gray-500 sm:col-span-2 sm:mt-0 flex flex-col space-y-2">
                   <dt class="font-medium text-gray-700">Audience Details :</dt>
-                  <p v-if="DetailAnaylsis.audience_detail"> {{ audienceDetail[0] }}</p>
+                  <p v-if="DetailAnaylsis.audience_age"> {{ DetailAnaylsis.audience_age }}</p>
+                  <p v-else>N/A</p>
+                  <dt class="font-medium text-gray-700">Audience Gender :</dt>
+                  <p v-if="DetailAnaylsis.audience_gender">{{ DetailAnaylsis.audience_gender }}</p>
                   <p v-else>N/A</p>
                   <dt class="font-medium text-gray-700">Top 3 countries :</dt>
-                  <p v-if="DetailAnaylsis.audience_detail"> {{ audienceDetail[1] }}</p>
-                  <p v-if="DetailAnaylsis.audience_detail">{{ audienceDetail[2] }}</p>
+                  <p v-if="DetailAnaylsis.top_countries"> {{ DetailAnaylsis.top_countries }}</p>
                   <p v-else>N/A</p>
                 </dd>
               </div>
@@ -145,7 +147,7 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white">
-                  <tr v-if="keywordData" v-for="(keywordData, index) in similar_keywords" :key="index" class="even:bg-[#EFF4FD]">
+                  <tr v-if="similar_keywords != 0" v-for="(keywordData, index) in similar_keywords" :key="index" class="even:bg-[#EFF4FD]">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium whitespace-nowrap sm:pl-3">
                       <label class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100">
                         <CheckboxRoot v-model="checkboxOne"
@@ -160,14 +162,14 @@
                             </svg>
                           </CheckboxIndicator>
                         </CheckboxRoot>
-                        <span class="select-none font-[16px] text-gray-800">{{ keywordData.keyword }}</span>
+                        <span class="select-none font-[16px] text-gray-800">{{ keywordData?.keyword }}</span>
                       </label>
                     </td>
                     <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-800">
-                      {{ keywordData.monthly_search_volume }}
+                      {{ keywordData?.monthly_search_volume }}
                     </td>
                     <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
-                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordData.difficulty
+                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordData?.difficulty
                       }}</span>
                     </td>
                     <td class="px-4 py-2 text-right">
@@ -181,7 +183,7 @@
                      </button> 
                     </td>
                   </tr>
-                  <tr v-else v-for="(keywordDataDefault, indexDefault) in keywordDataDefaults" :key="indexDefault" class="even:bg-[#EFF4FD]">
+                  <tr v-else  v-for="(keywordDataDefault, indexDefault) in keywordDataDefaults" :key="indexDefault" class="even:bg-[#EFF4FD]">
                     <td class="py-4 pl-4 pr-3 text-sm font-medium whitespace-nowrap sm:pl-3">
                       <label class="flex flex-row gap-4 items-center [&>.checkbox]:hover:bg-neutral-100">
                         <CheckboxRoot v-model="checkboxOne"
@@ -196,14 +198,14 @@
                             </svg>
                           </CheckboxIndicator>
                         </CheckboxRoot>
-                        <span class="select-none font-[16px] text-gray-800">{{ keywordDataDefault.keyword }}</span>
+                        <span class="select-none font-[16px] text-gray-800">{{ keywordDataDefault?.keyword }}</span>
                       </label>
                     </td>
                     <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-800">
-                      {{ keywordDataDefault.monthly_search_volume }}
+                      {{ keywordDataDefault?.monthly_search_volume }}
                     </td>
                     <td class="flex items-center gap-2 px-3 py-4 text-sm whitespace-nowrap">
-                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordDataDefault.difficulty
+                      <span class="rounded-full text-white bg-[#FCC42D] px-4 py-0.5 text-[12px] font-bold"> {{ keywordDataDefault?.difficulty
                       }}</span>
                     </td>
                     <td class="px-4 py-2 text-right">
@@ -653,6 +655,7 @@ function changeTabMarketing(tab) {
 }
 </script>
 <script>
+import { getRequestApi } from '../helper/api.js';
 import useToastHook from "../hooks/ToastMessage";
 const apiErrors = ref([]);
 export default {
@@ -666,7 +669,9 @@ export default {
       savedTopic:false,
       DetailAnaylsis: {
         CTR_estimates: 0,
-        audience_detail: "", // Initially empty, to be populated from the API
+        audience_age: '', 
+        audience_gender: '', 
+        top_countries: '', 
         difficulty: 0,
         estimated_adsense_earning: 0,
         monthly_search_volume: 0
@@ -711,16 +716,18 @@ export default {
         this.similar_keywords = responseData.similar_keywords;
         this.DetailAnaylsis = {
           CTR_estimates: responseData.CTR_estimates,
-          audience_detail: responseData.audience_detail,
+          audience_age: responseData.audience_age,
+          top_countries: responseData.top_countries,
+          audience_gender: responseData.audience_gender,
           difficulty: responseData.difficulty,
           estimated_adsense_earning: responseData.estimated_adsense_earning,
-          monthly_search_volume: responseData.monthly_search_volume
-
+          monthly_search_volume: responseData.monthly_search_volume,
         };
         console.log(responseData);
       } catch (error) {
         this.showLoader = false;
         console.error("Error:", error);
+        this.showErrorToast(error);
         apiErrors.value.push(error.response.data.message);
       }
       setTimeout(() => {

@@ -657,10 +657,6 @@ const handleDrop = (event) => {
 
 const uploadImages = () => {
   console.log(media.value.added);
-
-  // You can implement the image upload logic here
-  // Send the selected images to your server using an HTTP request (e.g., POST).
-  // You will need to construct a FormData object to send the images.
   const formData = new FormData();
 
   for (const image of media.value.added) {
