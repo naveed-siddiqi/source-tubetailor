@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/pages/Home.vue";
+import purchase from "@/pages/purchase.vue";
 import Marketing from "@/pages/Marketing.vue";
 import History from "@/pages/History.vue";
 import ContentGenerator from "@/pages/ContentGenerator.vue";
@@ -23,6 +24,12 @@ const router = createRouter({
       path: "/",
       name: "landing",
       component: Landing,
+    },
+    {
+      path: "/plan/:slug",
+      name: "purchase",
+      props: true,
+      component: purchase,
     },
     {
       path: "/dashboard",
