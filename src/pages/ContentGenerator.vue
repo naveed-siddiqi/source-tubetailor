@@ -152,7 +152,7 @@
           </div>
         </div>
         <div class="text-center md:col-span-2">
-                <button class="bg-red-600 px-3  py-2 rounded-md text-white outline outline-offset-2 outline-2">Export to Optimization</button>
+                <button @click="exportToOptimization"  class="bg-red-600 px-3  py-2 rounded-md text-white outline outline-offset-2 outline-2">Export to Optimization</button>
               </div>
         <!-- Second Column -->
         <div class="col-span-2">
@@ -210,14 +210,14 @@
                   <span v-else v-for="person in people" :key="person.email"
                     class="px-3 py-1 bg-[#EFF4FD] text-gray-500 rounded-full text-[12px] whitespace-nowrap flex">{{ person.data }}</span>
               </div>
-             
+
             </div>
             <!-- Content 2 in the second column -->
-           
+
            </div>
-           
-        </div> 
-               
+
+        </div>
+
 
             <div class="p-4 bg-white bg-shadow rounded-xl border md:col-span-2">
               <!-- Your content here -->
@@ -320,7 +320,7 @@
                       </ListboxOption>
                       </div>
                     </div>
-                     
+
                     </ListboxOptions>
                   </transition>
                 </div>
@@ -329,7 +329,7 @@
               <div class="flex flex-col gap-4 items-start py-4">
                 <div class="flex justify-end w-full">
                   <button
-          
+
                     class="px-[40px] py-[6px] rounded-full bg-youtube text-white"
                     @click="voiceover()">
                     Generate
@@ -1190,6 +1190,7 @@ import AudioPlayer from "vue-audio";
 import GlobalAlert from "@/components/Alert.vue";
 import { ExclamationTriangleIcon } from "@heroicons/vue/20/solid";
 import useToastHook from "../hooks/ToastMessage";
+import { useMainStore } from '@/store/index';
 
 const apiErrors = ref([]);
 const onSuccess = () => {
@@ -1223,6 +1224,7 @@ export default {
       shouldRenderAudio: false,
       showLoader: false,
       selectedVoice: null,
+      storeContent: useMainStore(),
       apiResponse: {
         script: "",
         narration_script: "",
@@ -1244,6 +1246,11 @@ export default {
     const { showSuccessToast, showErrorToast } = useToastHook();
     this.showSuccessToast = showSuccessToast;
     this.showErrorToast = showErrorToast;
+    this.apiResponse.script = this.storeContent.scriptContentGenerator
+    this.apiResponse.narration_script = this.storeContent.narration_scriptContentGenerator
+    this.apiResponse.description = this.storeContent.descriptionContentGenerator
+    this.apiResponse.tags = this.storeContent.tagsContentGenerator
+    this.textValue = this.storeContent.textValueContentGenerator
   },
   computed: {
     groupedVoices() {
@@ -1294,7 +1301,6 @@ export default {
           this.selected = this.peopleVoiceOver[0];
         }
       } catch (error) {
-        this.showErrorToast(error);
         this.showLoader = false;
       }
     },
@@ -1316,10 +1322,15 @@ export default {
         });
         this.showLoader = false;
         this.apiResponse = response;
-        console.log(this.apiResponse);
+        this.storeContent.$patch((state) => {
+          state.scriptContentGenerator = this.apiResponse?.script
+          state.narration_scriptContentGenerator = this.apiResponse?.narration_script
+          state.descriptionContentGenerator = this.apiResponse?.description
+          state.tagsContentGenerator = this.apiResponse?.tags
+          state.textValueContentGenerator = this.textValue
+        });
       } catch (error) {
         this.showLoader = false;
-        this.showErrorToast(error);
       }
       setTimeout(() => {
         this.apiErrors = [];
@@ -1331,6 +1342,13 @@ export default {
       if (this.voiceOverResult) {
         this.$refs.audioPlayer.play();
       }
+    },
+    async exportToOptimization(){
+      this.storeContent.$patch((state) => {
+        if(this.apiResponse) {
+          this.$router.push({ path: '/optimization' });
+        }
+      })
     },
     async voiceover() {
       console.log(this.selected.id);
@@ -1352,7 +1370,6 @@ export default {
         console.log(this.voiceOverResult);
       } catch (error) {
         this.showLoader = false;
-        this.showErrorToast(error);
       }
       setTimeout(() => {
         this.apiErrors = [];
@@ -1372,7 +1389,7 @@ export default {
     },
   },
   mounted() {
-    this.textValue = localStorage.getItem("topic");
+    this.textValue = localStorage.getItem("topic") ?? this.textValue;
     this.fetchVoiceData();
   },
 };

@@ -136,30 +136,36 @@
 </template>
 
 <script>
-import MainLayout from "@/layouts/MainLayout.vue";
-import TableLayout from "@/layouts/TableLayout.vue";
-import { ref } from "vue";
-import { getRequestApi, putRequest } from "../helper/api";
+  import MainLayout from "@/layouts/MainLayout.vue";
+  import TableLayout from "@/layouts/TableLayout.vue";
+  import useToastHook from "../hooks/ToastMessage";
 
-export default {
-  components: {
+  import {ref, computed} from "vue";
+  import {getRequestApi, putRequest} from "../helper/api";
+
+  export default {
+    components:{
       MainLayout,
       TableLayout
-  },
-  data() {
+    },
+      setup(){
+          const { showSuccessToast, showErrorToast } = useToastHook();
+          return {
+              showSuccessToast,
+              showErrorToast,
+          };
+      },
+    onMounted() {
+    },
+    data() {
       return {
-          user: {
-              email: '',
-              firstname: '',
-              lastname: ''
-          },
-          planData: null,
-          purchasePlan: null,
-          loading: false,
-      };
-  },
-  async mounted() {
-      await this.profile();
+        planData: ref(null),
+        user: ref(null),
+        purchasePlan: ref(null)
+      }
+    },
+    async mounted() {
+      await this.profile()
       this.fetchPlan();
   },
   methods: {
@@ -172,43 +178,46 @@ export default {
           }
       },
       async fetchPlan() {
-          try {
-              const response = await getRequestApi('plan');
-              this.planData = response;
-              if (this.planData?.current_plan) {
-                  const planResponse = await getRequestApi(`/plan/${this.planData?.current_plan}`);
-                  this.purchasePlan = planResponse.plan;
+          if(this.user.subscribed) {
+              try {
+                  const response = await getRequestApi('plan');
+                  this.planData = response;
+                  if (this.planData?.current_plan) {
+                      const planResponse = await getRequestApi(`/plan/${this.planData?.current_plan}`);
+                      this.purchasePlan = planResponse.plan;
+                  }
+              } catch (error) {
+                  this.showErrorToast('Error fetching plan:', error);
               }
-          } catch (error) {
-              console.error('Error fetching plan:', error);
           }
       },
       async cancelPlan() {
-          if (confirm("Are you sure?")) {
-              try {
-                  const response = await putRequest('/plan/cancel');
-                  this.planData = response;
-                  alert(this.planData.message);
-                  await this.profile();
-              } catch (error) {
-                  console.error('Error cancelling plan:', error);
-              }
+        if (confirm("Are you sure?")) {
+          try {
+            const response = await putRequest('/plan/cancel');
+            this.planData = response;
+              this.showSuccessToast(this.planData.message);
+            await this.profile()
+          } catch (error) {
+              this.showErrorToast('Error fetching plan:', error);
           }
+        }
       },
       async resumePlan() {
-          if (confirm("Are you sure?")) {
-              try {
-                  const response = await putRequest('/plan/resume');
-                  this.planData = response;
-                  alert(this.planData.message);
-                  this.fetchPlan();
-              } catch (error) {
-                  console.error('Error resuming plan:', error);
-              }
+        if (confirm("Are you sure?")) {
+          try {
+            const response = await putRequest('/plan/resume');
+            this.planData = response;
+              this.showSuccessToast(this.planData.message);
+            this.fetchPlan()
+              await this.profile()
+          } catch (error) {
+              this.showErrorToast('Error fetching plan:', error);
           }
+        }
       },
       async updateProfile() {
-        this.loading = true;
+          this.loading = true;
           try {
               const payload = {};
               if (this.user.firstname) {
@@ -218,17 +227,17 @@ export default {
                   payload.lastname = this.user.lastname;
               }
               if (Object.keys(payload).length === 0) {
-                  alert('Please provide at least one parameter.');
+                  this.showSuccessToast("Please Fill all fields.");
                   return;
               }
               const response = await putRequest('/profile', payload);
-              alert('Profile updated successfully');
+              this.showSuccessToast("Profile Updated Successfully");
           } catch (error) {
               console.error('Error updating profile:', error);
           }
       }
-  }
-};
+    },
+  };
 </script>
 
 <style scoped>

@@ -21,7 +21,13 @@ export async function getRequestApi(url, parameter) {
   } catch (error) {
     console.error("Error in API request:", error.response.data.message);
     showErrorToast(error.response.data.message); // Show error message in toast
-    throw error; // Re-throw the error to propagate it further if needed
+    if (error.response.status === 401) {
+          localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+      window.location.href='/'
+    }
+
+      throw error; // Re-throw the error to propagate it further if needed
   }
 }
 
@@ -42,6 +48,11 @@ export async function postRequest(url, parameter) {
   } catch (error) {
     console.error("Error in API request:", error.response.data.message);
     showErrorToast(error.response.data.message); // Show error message in toast
+    if (error.response.status === 401) {
+          localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+      window.location.href='/'
+    }
     throw error; // Re-throw the error to propagate it further if needed
   }
 }
@@ -63,6 +74,48 @@ export async function putRequest(url, parameter) {
   } catch (error) {
     console.error("Error in API request:", error.response.data.message);
     showErrorToast(error.response.data.message); // Show error message in toast
+    if (error.response.status === 401) {
+          localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+      window.location.href='/'
+    }
     throw error; // Re-throw the error to propagate it further if needed
+  }
+}
+
+export async function getRequestApiWithoutAuth(url, parameter) {
+  try {
+    const response = await axios.get(url, {
+      params: parameter,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error in API request:", error.response.data.message);
+    showErrorToast(error.response.data.message); // Show error message in toast
+    throw error; // Re-throw the error to propagate it further if needed
+  }
+}
+
+export async function getUserDetail() {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    let user = await getRequestApi('profile');
+    return user
+  }
+  return false
+}
+
+
+export async function logout() {
+  try {
+    const marketingResponse = await postRequest("logout");
+    localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+  } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loglevel");
+    console.error("Error in YouTube marketing:", error);
+    showErrorToast(error.response?.data?.message || "An error occurred during YouTube marketing");
   }
 }
