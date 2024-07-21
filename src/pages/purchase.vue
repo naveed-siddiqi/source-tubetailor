@@ -60,8 +60,8 @@
                 </div>
               </div>
               <div class="mt-6">
-                <button type="submit" class="w-full bg-youtube text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline" :data-secret="formattedPlanClientSecret">
-                  Purchase
+                <button id="card-button" type="submit" class="w-full bg-youtube text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline" :data-secret="formattedPlanClientSecret">
+                  Purchase 
                 </button>
               </div>
             </form>
